@@ -1,8 +1,6 @@
 import 'package:bracket_buddy/app/data/theme/app_theme.dart';
 import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/text_widgets/body_text.dart';
-import 'package:bracket_buddy/generated/assets.dart';
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
