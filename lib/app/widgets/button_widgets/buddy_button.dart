@@ -24,7 +24,7 @@ class BuddyButton extends StatelessWidget {
   final TextStyle? labelTextStyle;
 
   const BuddyButton({
-    Key? key,
+    super.key,
     this.child,
     this.label = 'Label',
     this.labelTextSize = 20.0,
@@ -40,7 +40,7 @@ class BuddyButton extends StatelessWidget {
     this.side,
     this.margin,
     this.labelTextStyle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

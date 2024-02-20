@@ -15,7 +15,7 @@ import '../controllers/tournament_controller.dart';
 import 'widgets/select_players.dart';
 
 class TournamentView extends GetView<TournamentController> {
-  const TournamentView({Key? key}) : super(key: key);
+  const TournamentView({super.key});
 
   @override
   Widget build(BuildContext context) {
