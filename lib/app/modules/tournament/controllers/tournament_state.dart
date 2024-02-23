@@ -1,12 +1,19 @@
-import 'package:bracket_buddy/app/modules/tournament/data/models/player_model.dart';
+import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../../db_services/collections/player_db_model.dart';
+import '../../../db_services/collections/tournament_db_model.dart';
 
 class TournamentState {
   /// [_tournamentSelectorController] controllers which tournament type is selected
   final PageController _tournamentSelectorController = PageController();
   PageController get tournamentSelectorController =>
       _tournamentSelectorController;
+
+  final Rx<Tournament> _tournament = Tournament().obs;
+  Tournament get tournament => _tournament.value;
+  set tournament(Tournament tournament) => _tournament.value = tournament;
 
   final TextEditingController _tournamentNameController =
       TextEditingController();
@@ -44,9 +51,9 @@ class TournamentState {
   List<Player> get players => _players;
   set players(List<Player> players) => _players.value = players;
 
-  final RxList<Match> _matches = <Match>[].obs;
-  List<Match> get matches => _matches;
-  set matches(List<Match> matches) => _matches.value = matches;
+  final RxList<Fixtures> _matches = <Fixtures>[].obs;
+  List<Fixtures> get matches => _matches;
+  set matches(List<Fixtures> matches) => _matches.value = matches;
 }
 
 enum TournamentType {

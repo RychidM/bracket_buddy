@@ -3,7 +3,6 @@ import 'package:bracket_buddy/app/data/theme/app_theme.dart';
 import 'package:bracket_buddy/app/modules/tournament/controllers/tournament_controller.dart';
 import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/create_tournament_header.dart';
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -111,9 +110,10 @@ class TournamentSetupViewOne extends StatelessWidget {
         TextFormField(
           textInputAction: TextInputAction.done,
           style: AppTheme.buddyFormTextStyle,
-          onChanged: (value) => tournamentController.tournamentState.tournamentNameController,
+          controller: tournamentController.tournamentState.tournamentNameController,
+          onChanged: (value) => tournamentController.onTournamentNameChanged(value.trim()),
           decoration: InputDecoration(
-            hintText: "${adjectives[19]}-${nouns[234]} tournament",
+            hintText: "${tournamentController.tournamentState.tournamentName} tournament",
             hintStyle: AppTheme.buddyFormTextStyle,
             contentPadding:
                 EdgeInsets.symmetric(horizontal: 25.w, vertical: 25.h),

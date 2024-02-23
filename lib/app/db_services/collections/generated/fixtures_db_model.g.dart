@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'match_db_model.dart';
+part of '../fixtures_db_model.dart';
 
 // **************************************************************************
 // IsarCollectionGenerator
@@ -22,33 +22,15 @@ const FixturesSchema = CollectionSchema(
       name: r'matchRound',
       type: IsarType.long,
     ),
-    r'playerOne': PropertySchema(
-      id: 1,
-      name: r'playerOne',
-      type: IsarType.object,
-      target: r'DbPlayer',
-    ),
     r'playerOneScore': PropertySchema(
-      id: 2,
+      id: 1,
       name: r'playerOneScore',
       type: IsarType.long,
     ),
-    r'playerTwo': PropertySchema(
-      id: 3,
-      name: r'playerTwo',
-      type: IsarType.object,
-      target: r'DbPlayer',
-    ),
     r'playerTwoScore': PropertySchema(
-      id: 4,
+      id: 2,
       name: r'playerTwoScore',
       type: IsarType.long,
-    ),
-    r'tournament': PropertySchema(
-      id: 5,
-      name: r'tournament',
-      type: IsarType.object,
-      target: r'DbTournament',
     )
   },
   estimateSize: _fixturesEstimateSize,
@@ -97,11 +79,27 @@ const FixturesSchema = CollectionSchema(
       ],
     )
   },
-  links: {},
-  embeddedSchemas: {
-    r'DbPlayer': DbPlayerSchema,
-    r'DbTournament': DbTournamentSchema
+  links: {
+    r'playerOne': LinkSchema(
+      id: -8352533949920539717,
+      name: r'playerOne',
+      target: r'Player',
+      single: true,
+    ),
+    r'playerTwo': LinkSchema(
+      id: -9062248374037895895,
+      name: r'playerTwo',
+      target: r'Player',
+      single: true,
+    ),
+    r'tournament': LinkSchema(
+      id: 7265541676101190959,
+      name: r'tournament',
+      target: r'Tournament',
+      single: true,
+    )
   },
+  embeddedSchemas: {},
   getId: _fixturesGetId,
   getLinks: _fixturesGetLinks,
   attach: _fixturesAttach,
@@ -114,28 +112,6 @@ int _fixturesEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.playerOne;
-    if (value != null) {
-      bytesCount += 3 +
-          DbPlayerSchema.estimateSize(value, allOffsets[DbPlayer]!, allOffsets);
-    }
-  }
-  {
-    final value = object.playerTwo;
-    if (value != null) {
-      bytesCount += 3 +
-          DbPlayerSchema.estimateSize(value, allOffsets[DbPlayer]!, allOffsets);
-    }
-  }
-  {
-    final value = object.tournament;
-    if (value != null) {
-      bytesCount += 3 +
-          DbTournamentSchema.estimateSize(
-              value, allOffsets[DbTournament]!, allOffsets);
-    }
-  }
   return bytesCount;
 }
 
@@ -146,26 +122,8 @@ void _fixturesSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeLong(offsets[0], object.matchRound);
-  writer.writeObject<DbPlayer>(
-    offsets[1],
-    allOffsets,
-    DbPlayerSchema.serialize,
-    object.playerOne,
-  );
-  writer.writeLong(offsets[2], object.playerOneScore);
-  writer.writeObject<DbPlayer>(
-    offsets[3],
-    allOffsets,
-    DbPlayerSchema.serialize,
-    object.playerTwo,
-  );
-  writer.writeLong(offsets[4], object.playerTwoScore);
-  writer.writeObject<DbTournament>(
-    offsets[5],
-    allOffsets,
-    DbTournamentSchema.serialize,
-    object.tournament,
-  );
+  writer.writeLong(offsets[1], object.playerOneScore);
+  writer.writeLong(offsets[2], object.playerTwoScore);
 }
 
 Fixtures _fixturesDeserialize(
@@ -174,27 +132,11 @@ Fixtures _fixturesDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Fixtures(
-    matchRound: reader.readLongOrNull(offsets[0]),
-    playerOne: reader.readObjectOrNull<DbPlayer>(
-      offsets[1],
-      DbPlayerSchema.deserialize,
-      allOffsets,
-    ),
-    playerOneScore: reader.readLongOrNull(offsets[2]),
-    playerTwo: reader.readObjectOrNull<DbPlayer>(
-      offsets[3],
-      DbPlayerSchema.deserialize,
-      allOffsets,
-    ),
-    playerTwoScore: reader.readLongOrNull(offsets[4]),
-    tournament: reader.readObjectOrNull<DbTournament>(
-      offsets[5],
-      DbTournamentSchema.deserialize,
-      allOffsets,
-    ),
-  );
+  final object = Fixtures();
   object.fixtureId = id;
+  object.matchRound = reader.readLongOrNull(offsets[0]);
+  object.playerOneScore = reader.readLongOrNull(offsets[1]);
+  object.playerTwoScore = reader.readLongOrNull(offsets[2]);
   return object;
 }
 
@@ -208,27 +150,9 @@ P _fixturesDeserializeProp<P>(
     case 0:
       return (reader.readLongOrNull(offset)) as P;
     case 1:
-      return (reader.readObjectOrNull<DbPlayer>(
-        offset,
-        DbPlayerSchema.deserialize,
-        allOffsets,
-      )) as P;
+      return (reader.readLongOrNull(offset)) as P;
     case 2:
       return (reader.readLongOrNull(offset)) as P;
-    case 3:
-      return (reader.readObjectOrNull<DbPlayer>(
-        offset,
-        DbPlayerSchema.deserialize,
-        allOffsets,
-      )) as P;
-    case 4:
-      return (reader.readLongOrNull(offset)) as P;
-    case 5:
-      return (reader.readObjectOrNull<DbTournament>(
-        offset,
-        DbTournamentSchema.deserialize,
-        allOffsets,
-      )) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -239,11 +163,15 @@ Id _fixturesGetId(Fixtures object) {
 }
 
 List<IsarLinkBase<dynamic>> _fixturesGetLinks(Fixtures object) {
-  return [];
+  return [object.playerOne, object.playerTwo, object.tournament];
 }
 
 void _fixturesAttach(IsarCollection<dynamic> col, Id id, Fixtures object) {
   object.fixtureId = id;
+  object.playerOne.attach(col, col.isar.collection<Player>(), r'playerOne', id);
+  object.playerTwo.attach(col, col.isar.collection<Player>(), r'playerTwo', id);
+  object.tournament
+      .attach(col, col.isar.collection<Tournament>(), r'tournament', id);
 }
 
 extension FixturesQueryWhereSort on QueryBuilder<Fixtures, Fixtures, QWhere> {
@@ -806,22 +734,6 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerOneIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'playerOne',
-      ));
-    });
-  }
-
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerOneIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'playerOne',
-      ));
-    });
-  }
-
   QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
       playerOneScoreIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -891,22 +803,6 @@ extension FixturesQueryFilter
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerTwoIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'playerTwo',
-      ));
-    });
-  }
-
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerTwoIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'playerTwo',
       ));
     });
   }
@@ -983,51 +879,52 @@ extension FixturesQueryFilter
       ));
     });
   }
-
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> tournamentIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'tournament',
-      ));
-    });
-  }
-
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
-      tournamentIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'tournament',
-      ));
-    });
-  }
 }
 
 extension FixturesQueryObject
+    on QueryBuilder<Fixtures, Fixtures, QFilterCondition> {}
+
+extension FixturesQueryLinks
     on QueryBuilder<Fixtures, Fixtures, QFilterCondition> {
   QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerOne(
-      FilterQuery<DbPlayer> q) {
+      FilterQuery<Player> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'playerOne');
+      return query.link(q, r'playerOne');
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerOneIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'playerOne', 0, true, 0, true);
     });
   }
 
   QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerTwo(
-      FilterQuery<DbPlayer> q) {
+      FilterQuery<Player> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'playerTwo');
+      return query.link(q, r'playerTwo');
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerTwoIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'playerTwo', 0, true, 0, true);
     });
   }
 
   QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> tournament(
-      FilterQuery<DbTournament> q) {
+      FilterQuery<Tournament> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'tournament');
+      return query.link(q, r'tournament');
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> tournamentIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'tournament', 0, true, 0, true);
     });
   }
 }
-
-extension FixturesQueryLinks
-    on QueryBuilder<Fixtures, Fixtures, QFilterCondition> {}
 
 extension FixturesQuerySortBy on QueryBuilder<Fixtures, Fixtures, QSortBy> {
   QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByMatchRound() {
@@ -1153,33 +1050,15 @@ extension FixturesQueryProperty
     });
   }
 
-  QueryBuilder<Fixtures, DbPlayer?, QQueryOperations> playerOneProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'playerOne');
-    });
-  }
-
   QueryBuilder<Fixtures, int?, QQueryOperations> playerOneScoreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'playerOneScore');
     });
   }
 
-  QueryBuilder<Fixtures, DbPlayer?, QQueryOperations> playerTwoProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'playerTwo');
-    });
-  }
-
   QueryBuilder<Fixtures, int?, QQueryOperations> playerTwoScoreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'playerTwoScore');
-    });
-  }
-
-  QueryBuilder<Fixtures, DbTournament?, QQueryOperations> tournamentProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'tournament');
     });
   }
 }

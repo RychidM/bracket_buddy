@@ -6,10 +6,16 @@ import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../data/models/player_model.dart';
+import '../../../db_services/collections/player_db_model.dart';
 
 class TournamentController extends GetxController {
   TournamentState tournamentState = TournamentState();
+
+  @override
+  void onInit() {
+    tournamentState.tournamentName = generateWordPairs().take(1).toList().first.asSnakeCase;
+    super.onInit();
+  }
 
   void updateTournamentType(TournamentType tournamentType) {
     tournamentState.tournamentType = tournamentType;
@@ -45,7 +51,12 @@ class TournamentController extends GetxController {
 
       String gamerTag = "$wordPair-$number";
 
-      players.add(Player(name: gamerTag, avatar: playerAvatar));
+      final player = Player()
+        ..gamerTag = gamerTag
+        ..tournaments.value = tournamentState.tournament
+        ..avatar = playerAvatar;
+
+      players.add(player);
     }
 
     tournamentState.players = players;
@@ -69,7 +80,7 @@ class TournamentController extends GetxController {
 
     players.shuffle();
 
-    for (int i = 0; i < players.length; i +=2 ){
+    for (int i = 0; i < players.length; i += 2) {
       
     }
   }

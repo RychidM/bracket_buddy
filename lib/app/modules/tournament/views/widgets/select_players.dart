@@ -9,11 +9,11 @@ import 'package:get/get.dart';
 import 'package:scrollable/exports.dart';
 
 import '../../../../data/constants/app_colors.dart';
+import '../../../../db_services/collections/player_db_model.dart';
 import '../../../../widgets/create_tournament_header.dart';
 import '../../../../widgets/text_widgets/heading_text.dart';
 import '../../controllers/tournament_controller.dart';
 import '../../controllers/tournament_state.dart';
-import '../../data/models/player_model.dart';
 
 class SelectPlayersView extends StatelessWidget {
   const SelectPlayersView({super.key});
@@ -95,7 +95,7 @@ class SelectPlayersView extends StatelessWidget {
                             Gap(10.w),
                             Expanded(
                                 child:
-                                    BuddyBodyText(text: players[index].name)),
+                                    BuddyBodyText(text: players[index].gamerTag)),
                           ],
                         ),
                       );
