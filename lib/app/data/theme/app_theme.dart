@@ -12,6 +12,9 @@ class AppTheme {
     height: 0.07,
   );
 
+  static ThemeData buddyThemeData =
+      ThemeData(scaffoldBackgroundColor: AppColors.primaryGreenLight);
+
   static EdgeInsets bPadding20 =
       EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h);
 
@@ -25,4 +28,7 @@ class AppTheme {
     borderRadius: BorderRadius.circular(54.r),
     side: BorderSide(color: AppColors.borderGrey, width: 0.80.w),
   );
+
+  static BorderRadiusGeometry bRoundedBorderNoSide =
+      BorderRadius.circular(54.r);
 }

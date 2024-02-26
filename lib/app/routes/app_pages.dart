@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/fixtures/bindings/fixtures_binding.dart';
+import '../modules/fixtures/views/fixtures_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/splash_screen/bindings/splash_screen_binding.dart';
@@ -30,6 +32,11 @@ class AppPages {
       name: _Paths.TOURNAMENT,
       page: () => const TournamentView(),
       binding: TournamentBinding(),
+    ),
+    GetPage(
+      name: _Paths.FIXTURES,
+      page: () => const FixturesView(),
+      binding: FixturesBinding(),
     ),
   ];
 }

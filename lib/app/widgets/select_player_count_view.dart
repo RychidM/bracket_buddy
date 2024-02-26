@@ -13,6 +13,8 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:scrollable/exports.dart';
 
+import '../db_services/collections/tournament_db_model.dart';
+
 class SelectPlayerCountView extends StatelessWidget {
   const SelectPlayerCountView({super.key});
 
@@ -38,7 +40,7 @@ class SelectPlayerCountView extends StatelessWidget {
             ),
             const Align(
               alignment: Alignment.topCenter,
-              child: CreateTournamentHeader(
+              child: BuddyHeadyWidget(
                 headerTitle: "Select Number of Players",
               ),
             ),
@@ -54,7 +56,7 @@ class SelectPlayerCountView extends StatelessWidget {
             builder: (tournamentController) {
               List<int> numberOfPlayers = getNumberOfPlayersList(
                   tournamentController.tournamentState.tournamentType ==
-                      TournamentType.knockOut);
+                      TournamentType.knockout);
               return ScrollHaptics(
                 child: ListView.builder(
                   itemBuilder: (context, index) {

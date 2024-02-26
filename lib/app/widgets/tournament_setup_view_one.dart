@@ -3,7 +3,6 @@ import 'package:bracket_buddy/app/data/theme/app_theme.dart';
 import 'package:bracket_buddy/app/modules/tournament/controllers/tournament_controller.dart';
 import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/create_tournament_header.dart';
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +10,7 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 
 import '../../generated/assets.dart';
+import '../db_services/collections/tournament_db_model.dart';
 import '../modules/tournament/controllers/tournament_state.dart';
 import 'text_widgets/heading_text.dart';
 
@@ -25,7 +25,7 @@ class TournamentSetupViewOne extends StatelessWidget {
         Get.find<TournamentController>();
     return Column(
       children: [
-        const CreateTournamentHeader(),
+        const BuddyHeadyWidget(),
         Gap(50.h),
         Stack(
           children: [
@@ -37,7 +37,7 @@ class TournamentSetupViewOne extends StatelessWidget {
                 onPageChanged: (int value) {
                   HapticFeedback.lightImpact();
                   tournamentController.updateTournamentType(value < 1
-                      ? TournamentType.knockOut
+                      ? TournamentType.knockout
                       : TournamentType.league);
                 },
                 children: [
@@ -111,9 +111,13 @@ class TournamentSetupViewOne extends StatelessWidget {
         TextFormField(
           textInputAction: TextInputAction.done,
           style: AppTheme.buddyFormTextStyle,
-          onChanged: (value) => tournamentController.tournamentState.tournamentNameController,
+          controller:
+              tournamentController.tournamentState.tournamentNameController,
+          onChanged: (value) =>
+              tournamentController.onTournamentNameChanged(value.trim()),
           decoration: InputDecoration(
-            hintText: "${adjectives[19]}-${nouns[234]} tournament",
+            hintText:
+                "${tournamentController.tournamentState.tournamentName} tournament",
             hintStyle: AppTheme.buddyFormTextStyle,
             contentPadding:
                 EdgeInsets.symmetric(horizontal: 25.w, vertical: 25.h),
@@ -132,6 +136,7 @@ class TournamentSetupViewOne extends StatelessWidget {
           onTap: () {
             tournamentController
                 .updateCurrentTournamentStep(CreateTournamentStep.stepTwo);
+            tournamentController.saveTournamentInState();
           },
           label: 'Next',
         )

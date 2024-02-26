@@ -1,4 +1,5 @@
 import 'package:bracket_buddy/app/data/theme/app_theme.dart';
+import 'package:bracket_buddy/app/data/utils.dart';
 import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/text_widgets/body_text.dart';
 import 'package:flutter/material.dart';
@@ -9,11 +10,11 @@ import 'package:get/get.dart';
 import 'package:scrollable/exports.dart';
 
 import '../../../../data/constants/app_colors.dart';
+import '../../../../db_services/collections/player_db_model.dart';
 import '../../../../widgets/create_tournament_header.dart';
 import '../../../../widgets/text_widgets/heading_text.dart';
 import '../../controllers/tournament_controller.dart';
 import '../../controllers/tournament_state.dart';
-import '../../data/models/player_model.dart';
 
 class SelectPlayersView extends StatelessWidget {
   const SelectPlayersView({super.key});
@@ -40,7 +41,7 @@ class SelectPlayersView extends StatelessWidget {
             ),
             const Align(
               alignment: Alignment.topCenter,
-              child: CreateTournamentHeader(
+              child: BuddyHeadyWidget(
                 headerTitle: "Select Your Players",
               ),
             ),
@@ -58,8 +59,7 @@ class SelectPlayersView extends StatelessWidget {
                 return ListView.builder(
                     itemCount: players.length,
                     itemBuilder: (context, index) {
-                      Color avatarBgColor =
-                          tournamentController.getAccentColor(index);
+                      Color avatarBgColor = BuddyUtils.getAccentColor(index);
                       return Container(
                         padding: AppTheme.bPadding5,
                         width: double.maxFinite,
@@ -94,8 +94,8 @@ class SelectPlayersView extends StatelessWidget {
                             ),
                             Gap(10.w),
                             Expanded(
-                                child:
-                                    BuddyBodyText(text: players[index].name)),
+                                child: BuddyBodyText(
+                                    text: players[index].gamerTag)),
                           ],
                         ),
                       );
@@ -106,7 +106,9 @@ class SelectPlayersView extends StatelessWidget {
         ),
         Gap(10.h),
         BuddyButton(
-          onTap: () {},
+          onTap: () {
+            tournamentController.setUpTournament();
+          },
           label: "Start Pairing",
         )
       ],

@@ -1,19 +1,32 @@
 import 'dart:math';
 
+import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
+import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
+import 'package:bracket_buddy/app/db_services/models/knockout_tournament.dart';
+import 'package:bracket_buddy/app/db_services/models/league_tournament.dart';
 import 'package:bracket_buddy/app/modules/tournament/controllers/tournament_state.dart';
 import 'package:bracket_buddy/app/modules/tournament/data/tournament_dummy_data.dart';
 import 'package:english_words/english_words.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../data/models/player_model.dart';
+import '../../../db_services/collections/player_db_model.dart';
+import '../../../repository/fixtures_repo.dart';
+import '../../../routes/app_pages.dart';
 
 class TournamentController extends GetxController {
   TournamentState tournamentState = TournamentState();
 
+  final FixturesRepository _fixturesRepo = FixturesRepository();
+
+  @override
+  void onInit() async {
+    tournamentState.tournamentName =
+        generateWordPairs().take(1).toList().first.asSnakeCase.toLowerCase();
+    super.onInit();
+  }
+
   void updateTournamentType(TournamentType tournamentType) {
     tournamentState.tournamentType = tournamentType;
-    debugPrint(tournamentType.desc);
   }
 
   void updateCurrentTournamentStep(CreateTournamentStep step) {
@@ -28,7 +41,7 @@ class TournamentController extends GetxController {
     tournamentState.tournamentName = tournamentName;
   }
 
-  void generatePlayerNames() {
+  void generatePlayerNames() async {
     int numberOfPlayers = tournamentState.numberOfPlayers;
     final List<WordPair> wordPairs =
         generateWordPairs().take(numberOfPlayers).toList();
@@ -41,13 +54,20 @@ class TournamentController extends GetxController {
     for (int i = 0; i < numberOfPlayers; i++) {
       String playerAvatar = avatars[i % playerAvatars.length];
       String wordPair = wordPairs[i % playerAvatars.length].asSnakeCase;
-      int number = random.nextInt(9000) + 1;
+      int number = random.nextInt(100) + 1;
 
       String gamerTag = "$wordPair-$number";
 
-      players.add(Player(name: gamerTag, avatar: playerAvatar));
+      final player = Player()
+        ..gamerTag = gamerTag
+        ..tournaments.value = tournamentState.tournament
+        ..avatar = playerAvatar;
+
+      players.add(player);
     }
 
+    // var genPlayers = await _playerRepo.createMultiRecords(players);
+    // print(genPlayers.first?.gamerTag);
     tournamentState.players = players;
   }
 
@@ -57,20 +77,45 @@ class TournamentController extends GetxController {
     tournamentState.players = players;
   }
 
-  Color getAccentColor(int index) {
-    int correctColorIndex = index % Colors.primaries.length;
-    List<MaterialColor> shuffledColors = Colors.primaries.toList();
-    shuffledColors.shuffle();
-    return shuffledColors[correctColorIndex];
+  saveTournamentInState() async {
+    Tournament tournament = Tournament()
+      ..tournamentName = tournamentState.tournamentName
+      ..tournamentType = tournamentState.tournamentType;
+
+    if (tournamentState.tournamentType == TournamentType.knockout) {
+      tournament.knockoutTournament = KnockoutTournament()..currentRound = 0;
+    } else {
+      tournament.leagueTournament = LeagueTournament();
+    }
+
+    // List<Tournament> existingTournaments =
+    //     await _tournamentRepo.getAllRecords();
+    // if (existingTournaments.isNotEmpty) {
+    //   await _tournamentRepo.deleteMultiRecords(
+    //       existingTournaments.map((e) => e.tournamentId).toList());
+    // }
+    // var createdTour =
+    //     await _tournamentRepo.createRecord(tournament) ?? tournament;
+    // print(createdTour);
+    tournamentState.tournament = tournament;
   }
 
-  createMatches() {
-    List<Player> players = tournamentState.players;
-
-    players.shuffle();
-
-    for (int i = 0; i < players.length; i +=2 ){
-      
+  setUpTournament() async {
+    List<Fixtures> fixtures = [];
+    if (tournamentState.tournamentType == TournamentType.knockout) {
+      fixtures = tournamentState.tournament.knockoutTournament
+              ?.generateKnockOutMatches(
+                  tournamentState.players, tournamentState.tournament) ??
+          [];
+    } else {
+      fixtures = tournamentState.tournament.leagueTournament
+              ?.generateLeagueFixtures(
+                  tournamentState.players, tournamentState.tournament) ??
+          [];
     }
+    var newFixtures = await _fixturesRepo.createMultiRecords(fixtures);
+    print(newFixtures.first);
+    tournamentState.fixtures = newFixtures.where((element) => element != null).toList().cast<Fixtures>();
+    Get.offNamed(Routes.FIXTURES, arguments: tournamentState.fixtures);
   }
 }

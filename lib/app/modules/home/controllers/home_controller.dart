@@ -1,23 +1,19 @@
+import 'package:bracket_buddy/app/repository/fixtures_repo.dart';
+import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
-class HomeController extends GetxController {
-  //TODO: Implement HomeController
+import '../../../db_services/collections/fixtures_db_model.dart';
 
-  final count = 0.obs;
+class HomeController extends GetxController {
+  final _fixtureRepo = FixturesRepository();
+
   @override
-  void onInit() {
+  void onInit() async{
+   await _fixtureRepo.getAllRecords().then((List<Fixtures> fixtures) {
+      if (fixtures.isNotEmpty) {
+        Get.offNamed(Routes.FIXTURES, arguments: fixtures);
+      }
+    });
     super.onInit();
   }
-
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }
