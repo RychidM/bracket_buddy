@@ -1,4 +1,4 @@
-class AppStrings{
+class AppStrings {
   AppStrings._();
 
   static const String bAppName = "Bracket Buddy";
@@ -12,4 +12,5 @@ class AppStrings{
   static const String bKnockOut = "Knock Out";
   static const String bNumberOfPlayers = "Number of Players";
   static const String bStartPlaying = "Start Playing";
+  static const String bDbInstanceName = "bracketBuddy";
 }

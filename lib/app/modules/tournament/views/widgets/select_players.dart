@@ -1,4 +1,5 @@
 import 'package:bracket_buddy/app/data/theme/app_theme.dart';
+import 'package:bracket_buddy/app/data/utils.dart';
 import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/text_widgets/body_text.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class SelectPlayersView extends StatelessWidget {
             ),
             const Align(
               alignment: Alignment.topCenter,
-              child: CreateTournamentHeader(
+              child: BuddyHeadyWidget(
                 headerTitle: "Select Your Players",
               ),
             ),
@@ -58,8 +59,7 @@ class SelectPlayersView extends StatelessWidget {
                 return ListView.builder(
                     itemCount: players.length,
                     itemBuilder: (context, index) {
-                      Color avatarBgColor =
-                          tournamentController.getAccentColor(index);
+                      Color avatarBgColor = BuddyUtils.getAccentColor(index);
                       return Container(
                         padding: AppTheme.bPadding5,
                         width: double.maxFinite,
@@ -94,8 +94,8 @@ class SelectPlayersView extends StatelessWidget {
                             ),
                             Gap(10.w),
                             Expanded(
-                                child:
-                                    BuddyBodyText(text: players[index].gamerTag)),
+                                child: BuddyBodyText(
+                                    text: players[index].gamerTag)),
                           ],
                         ),
                       );
@@ -106,7 +106,9 @@ class SelectPlayersView extends StatelessWidget {
         ),
         Gap(10.h),
         BuddyButton(
-          onTap: () {},
+          onTap: () {
+            tournamentController.setUpTournament();
+          },
           label: "Start Pairing",
         )
       ],

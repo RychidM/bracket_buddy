@@ -5,9 +5,9 @@ import 'package:gap/gap.dart';
 
 import '../../generated/assets.dart';
 
-class CreateTournamentHeader extends StatelessWidget {
+class BuddyHeadyWidget extends StatelessWidget {
   final String headerTitle;
-  const CreateTournamentHeader({super.key, this.headerTitle = "Create Tournament"});
+  const BuddyHeadyWidget({super.key, this.headerTitle = "Create Tournament"});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class CreateTournamentHeader extends StatelessWidget {
           Assets.imagesBracketBuddyLogo,
           height: 50.h,
         ),
-        Gap(20.h),
+        Gap(15.h),
         BuddyBodyText(text: headerTitle),
       ],
     );

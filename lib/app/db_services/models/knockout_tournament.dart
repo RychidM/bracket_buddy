@@ -1,8 +1,8 @@
-import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
 import 'package:isar/isar.dart';
 
 import '../collections/fixtures_db_model.dart';
 import '../collections/player_db_model.dart';
+import '../collections/tournament_db_model.dart';
 
 part 'knockout_tournament.g.dart';
 
@@ -10,7 +10,8 @@ part 'knockout_tournament.g.dart';
 class KnockoutTournament {
   late int currentRound;
 
-  List<Fixtures> generateKnockOutMatches(List<Player> players, Tournament tournament) {
+    List<Fixtures> generateKnockOutMatches(
+      List<Player> players, Tournament tournament) {
     List<Fixtures> fixtures = [];
     int numberOfPlayers = players.length;
     int numberOfMatches = numberOfPlayers ~/ 2;
@@ -21,14 +22,15 @@ class KnockoutTournament {
         ..playerOne.value = players[i]
         ..playerTwo.value = players[numberOfPlayers - i - 1]
         ..tournament.value = tournament
-        ..matchRound = 1;
+        ..matchRound = tournament.knockoutTournament?.currentRound += 1;
       fixtures.add(fixture);
     }
-    currentRound++;
+    tournament.knockoutTournament?.currentRound++;
     return fixtures;
   }
 
-  List<Fixtures> generateNextSetOfMatched(List<Player> winners, Tournament tournament) {
+  List<Fixtures> generateNextSetOfMatched(
+      List<Player> winners, Tournament tournament) {
     List<Fixtures> nextRoundMatches = [];
     if (winners.isEmpty || winners.length.isOdd) {
       return nextRoundMatches;
@@ -42,10 +44,11 @@ class KnockoutTournament {
         ..playerOne.value = playerOne
         ..playerTwo.value = playerTwo
         ..tournament.value = tournament
-        ..matchRound = currentRound);
+        ..matchRound = tournament.knockoutTournament?.currentRound);
     }
 
-    currentRound++;
+    tournament.knockoutTournament?.currentRound++;
     return nextRoundMatches;
   }
+
 }

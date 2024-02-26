@@ -23,5 +23,11 @@ class Fixtures {
   @Index()
   int? matchRound;
 
- 
+  Fixtures reverseFixture() {
+    Fixtures reversedFixture = Fixtures()
+      ..playerOne.value = playerTwo.value
+      ..playerTwo.value = playerOne.value
+      ..tournament.value = tournament.value;
+    return reversedFixture;
+  }
 }

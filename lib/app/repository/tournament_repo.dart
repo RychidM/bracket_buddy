@@ -8,16 +8,18 @@ class TournamentRepository extends DbServiceAdaptor<Tournament> {
   final IsarDbService _dbService = IsarDbService();
 
   @override
-  Future<void> createMultiRecords(List<Tournament> records) async {
+  Future<List<Tournament>> createMultiRecords(List<Tournament> records) async {
     isar = await _dbService.tournamentDb;
-    await isar.writeTxn(() => isar.tournaments.putAll(records));
+      final ids = await isar.writeTxn(() => isar.tournaments.putAll(records));
+       await isar.tournaments.getAll(ids);
+       return await isar.tournaments.where().findAll();
   }
 
   @override
-  Future<void> createRecord(Tournament record) async {
+  Future<Tournament?> createRecord(Tournament record) async {
     isar = await _dbService.tournamentDb;
-
-    await isar.writeTxn(() => isar.tournaments.put(record));
+      final id = await isar.writeTxn(() => isar.tournaments.put(record));
+      return isar.tournaments.get(id);
   }
 
   @override

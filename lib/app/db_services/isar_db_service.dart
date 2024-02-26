@@ -1,3 +1,4 @@
+import 'package:bracket_buddy/app/data/constants/app_strings.dart';
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
 import 'package:isar/isar.dart';
@@ -15,10 +16,13 @@ class IsarDbService {
   Future<Isar> openTournamentDb() async {
     if (Isar.instanceNames.isEmpty) {
       final dir = await getApplicationDocumentsDirectory();
+      print(dir.path);
       return await Isar.open([TournamentSchema, FixturesSchema, PlayerSchema],
-          directory: dir.path, inspector: true, name: 'bracketBuddy');
+          directory: dir.path,
+          inspector: true,
+          name: AppStrings.bDbInstanceName);
     }
-    return Future.value(Isar.getInstance());
+    return Future.value(Isar.getInstance(AppStrings.bDbInstanceName));
   }
 
   Future<void> closeTournamentDb() async {

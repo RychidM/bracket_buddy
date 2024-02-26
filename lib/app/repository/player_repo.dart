@@ -12,7 +12,7 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
   Future<List<Player?>> createMultiRecords(List<Player> records) async {
     isar = await _dbService.tournamentDb;
     List<int> ids = await isar.writeTxn(() => isar.players.putAll(records));
-    return await getRecordsByIds(ids);
+    return await isar.players.getAll(ids);
   }
 
   @override

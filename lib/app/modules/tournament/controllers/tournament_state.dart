@@ -23,7 +23,7 @@ class TournamentState {
   /// [_tournamentType] holds the current value of selected tournament type in
   /// the state.
   final Rx<TournamentType> _tournamentType =
-      Rx<TournamentType>(TournamentType.knockOut);
+      Rx<TournamentType>(TournamentType.knockout);
   TournamentType get tournamentType => _tournamentType.value;
   set tournamentType(TournamentType type) => _tournamentType.value = type;
 
@@ -39,6 +39,8 @@ class TournamentState {
   /// to enter the tournament
   final RxInt _numberOfPlayers = 0.obs;
   int get numberOfPlayers => _numberOfPlayers.value;
+  /// holds the value of the selected number of players
+  /// to enter the tournament
   set numberOfPlayers(int value) => _numberOfPlayers.value = value;
 
   /// holds the value of the entered name by the user
@@ -52,18 +54,8 @@ class TournamentState {
   set players(List<Player> players) => _players.value = players;
 
   final RxList<Fixtures> _matches = <Fixtures>[].obs;
-  List<Fixtures> get matches => _matches;
-  set matches(List<Fixtures> matches) => _matches.value = matches;
-}
-
-enum TournamentType {
-  knockOut("Knock Out", "KO"),
-  league("League", "LG");
-
-  const TournamentType(this.code, this.desc);
-
-  final String desc;
-  final String code;
+  List<Fixtures> get fixtures => List<Fixtures>.from(_matches);
+  set fixtures(List<Fixtures> matches) => _matches.value = matches;
 }
 
 enum CreateTournamentStep { stepOne, stepTwo, stepThree }
