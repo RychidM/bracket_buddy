@@ -87,4 +87,12 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
     isar = await _dbService.tournamentDb;
     return await isar.players.where().eliminationStatusEqualTo(false).findAll();
   }
+
+  Future<void> deletePlayersAssociatedWithTournament(int id) async {
+    isar = await _dbService.tournamentDb;
+    await isar.writeTxn(() => isar.players
+        .where()
+        .filter()
+        .tournaments((q) => q.tournamentIdEqualTo(id)).deleteAll());
+  }
 }

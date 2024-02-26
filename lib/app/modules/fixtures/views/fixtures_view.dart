@@ -2,16 +2,19 @@ import 'package:bracket_buddy/app/data/constants/app_colors.dart';
 import 'package:bracket_buddy/app/data/theme/app_theme.dart';
 import 'package:bracket_buddy/app/data/utils.dart';
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
+import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:bracket_buddy/app/widgets/create_tournament_header.dart';
 import 'package:bracket_buddy/app/widgets/screen_template.dart';
 import 'package:bracket_buddy/app/widgets/text_widgets/body_text.dart';
 import 'package:bracket_buddy/generated/assets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
 
+import '../../../widgets/text_widgets/heading_text.dart';
 import '../controllers/fixtures_controller.dart';
 
 class FixturesView extends GetView<FixturesController> {
@@ -23,8 +26,29 @@ class FixturesView extends GetView<FixturesController> {
         isHintVisible: false,
         mainChild: Column(
           children: [
-            BuddyHeadyWidget(
-              headerTitle: "${controller.tournamentName} Tournament",
+            Stack(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Get.previousRoute == Routes.HOME
+                        ? Get.back()
+                        : Get.until(
+                            (route) => route.settings.name == Routes.HOME);
+                  },
+                  child: const BuddyHeadingText(
+                    text: "<",
+                    fontSize: 58,
+                    textColor: AppColors.primaryGreenLight,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: BuddyHeadyWidget(
+                    headerTitle: "${controller.tournamentName} Tournament",
+                  ),
+                ),
+              ],
             ),
             Gap(10.h),
             Expanded(
@@ -119,7 +143,8 @@ class PlayerAvatarContainer extends StatelessWidget {
   const PlayerAvatarContainer({
     super.key,
     required this.avatarBgColor,
-    required this.imgString, this.isWinner = false,
+    required this.imgString,
+    this.isWinner = false,
   });
 
   final Color avatarBgColor;
@@ -132,9 +157,11 @@ class PlayerAvatarContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 3.h),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: isWinner ? Border.all(width: 1.w, color: AppColors.promotionGreen) : Border(
-          right: BorderSide(color: avatarBgColor, width: 1.w),
-        ),
+        border: isWinner
+            ? Border.all(width: 1.w, color: AppColors.promotionGreen)
+            : Border(
+                right: BorderSide(color: avatarBgColor, width: 1.w),
+              ),
       ),
       child: Container(
         height: 35.h,

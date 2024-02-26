@@ -114,7 +114,6 @@ class TournamentController extends GetxController {
           [];
     }
     var newFixtures = await _fixturesRepo.createMultiRecords(fixtures);
-    print(newFixtures.first);
     tournamentState.fixtures = newFixtures.where((element) => element != null).toList().cast<Fixtures>();
     Get.offNamed(Routes.FIXTURES, arguments: tournamentState.fixtures);
   }
