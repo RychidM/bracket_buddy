@@ -23,6 +23,8 @@ class Fixtures {
   @Index()
   int? matchRound;
 
+  late String fixtureRoundName;
+
   Fixtures reverseFixture() {
     Fixtures reversedFixture = Fixtures()
       ..playerOne.value = playerTwo.value

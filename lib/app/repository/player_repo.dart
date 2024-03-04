@@ -92,14 +92,18 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
     return await isar.players.where(sort: Sort.desc).sortByPoints().findAll();
   }
 
-  Future<List<Player>> getPlayerByEliminationStatus(int id) async {
+  Future<List<Player>> getPlayersByWinStatus(int id) async {
     isar = await _dbService.tournamentDb;
-    return await isar.players
+    var res = await isar.players
         .where()
         .winStatusEqualTo(true)
         .filter()
         .tournaments((q) => q.tournamentIdEqualTo(id))
-        .findAll();
+        .findAll()
+        .then((value) {});
+        res as List<Player>;
+    print(res.map((e) => e.gamerTag).toList());
+    return res;
   }
 
   Future<void> deletePlayersAssociatedWithTournament(int id) async {

@@ -58,6 +58,7 @@ class SelectPlayersView extends StatelessWidget {
                     tournamentController.tournamentState.players;
                 return ListView.builder(
                     itemCount: players.length,
+                    padding: EdgeInsets.zero,
                     itemBuilder: (context, index) {
                       Color avatarBgColor = BuddyUtils.getAccentColor(index);
                       return Container(

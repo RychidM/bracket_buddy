@@ -1,4 +1,5 @@
 import 'package:bracket_buddy/app/data/constants/app_colors.dart';
+import 'package:bracket_buddy/app/data/constants/app_strings.dart';
 import 'package:bracket_buddy/app/data/theme/app_theme.dart';
 import 'package:bracket_buddy/app/data/utils.dart';
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
@@ -28,10 +29,12 @@ class FixturesView extends GetView<FixturesController> {
         bottomWidget: BuddyButton(
           onTap: () => controller.fixturesHasWinner()
               ? controller.generateNextFixtures()
-              : Get.snackbar(
-                  "Error", "Please select a winner for all fixtures"),
+              : Get.snackbar(AppStrings.bSelectWinnerErrTitle,
+                  AppStrings.bSelectWinnerErrMsg,
+                  backgroundColor:
+                      AppColors.primaryGreenLight.withOpacity(.25)),
           btnColor: AppColors.whiteColor,
-          label: "Next Round",
+          label: AppStrings.bNextRound,
           labelColor: AppColors.primaryTextColor,
         ),
         mainChild: Column(
@@ -54,8 +57,15 @@ class FixturesView extends GetView<FixturesController> {
                 ),
                 Align(
                   alignment: Alignment.topCenter,
-                  child: BuddyHeadyWidget(
-                    headerTitle: "${controller.tournamentName} Tournament",
+                  child: Column(
+                    children: [
+                      BuddyHeadyWidget(
+                        headerTitle: "${controller.tournamentName} Tournament",
+                      ),
+                      BuddyBodyText(
+                          text: controller
+                              .fixturesState.fixtures.first.fixtureRoundName),
+                    ],
                   ),
                 ),
               ],

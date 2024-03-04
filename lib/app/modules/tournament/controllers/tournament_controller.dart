@@ -88,15 +88,6 @@ class TournamentController extends GetxController {
       tournament.leagueTournament = LeagueTournament();
     }
 
-    // List<Tournament> existingTournaments =
-    //     await _tournamentRepo.getAllRecords();
-    // if (existingTournaments.isNotEmpty) {
-    //   await _tournamentRepo.deleteMultiRecords(
-    //       existingTournaments.map((e) => e.tournamentId).toList());
-    // }
-    // var createdTour =
-    //     await _tournamentRepo.createRecord(tournament) ?? tournament;
-    // print(createdTour);
     tournamentState.tournament = tournament;
   }
 

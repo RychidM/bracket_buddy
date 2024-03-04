@@ -17,18 +17,23 @@ const FixturesSchema = CollectionSchema(
   name: r'Fixtures',
   id: 1213557845256013914,
   properties: {
-    r'matchRound': PropertySchema(
+    r'fixtureRoundName': PropertySchema(
       id: 0,
+      name: r'fixtureRoundName',
+      type: IsarType.string,
+    ),
+    r'matchRound': PropertySchema(
+      id: 1,
       name: r'matchRound',
       type: IsarType.long,
     ),
     r'playerOneScore': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'playerOneScore',
       type: IsarType.long,
     ),
     r'playerTwoScore': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'playerTwoScore',
       type: IsarType.long,
     )
@@ -112,6 +117,7 @@ int _fixturesEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.fixtureRoundName.length * 3;
   return bytesCount;
 }
 
@@ -121,9 +127,10 @@ void _fixturesSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.matchRound);
-  writer.writeLong(offsets[1], object.playerOneScore);
-  writer.writeLong(offsets[2], object.playerTwoScore);
+  writer.writeString(offsets[0], object.fixtureRoundName);
+  writer.writeLong(offsets[1], object.matchRound);
+  writer.writeLong(offsets[2], object.playerOneScore);
+  writer.writeLong(offsets[3], object.playerTwoScore);
 }
 
 Fixtures _fixturesDeserialize(
@@ -134,9 +141,10 @@ Fixtures _fixturesDeserialize(
 ) {
   final object = Fixtures();
   object.fixtureId = id;
-  object.matchRound = reader.readLongOrNull(offsets[0]);
-  object.playerOneScore = reader.readLongOrNull(offsets[1]);
-  object.playerTwoScore = reader.readLongOrNull(offsets[2]);
+  object.fixtureRoundName = reader.readString(offsets[0]);
+  object.matchRound = reader.readLongOrNull(offsets[1]);
+  object.playerOneScore = reader.readLongOrNull(offsets[2]);
+  object.playerTwoScore = reader.readLongOrNull(offsets[3]);
   return object;
 }
 
@@ -148,10 +156,12 @@ P _fixturesDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 1:
       return (reader.readLongOrNull(offset)) as P;
     case 2:
+      return (reader.readLongOrNull(offset)) as P;
+    case 3:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -664,6 +674,142 @@ extension FixturesQueryFilter
     });
   }
 
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'fixtureRoundName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'fixtureRoundName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fixtureRoundName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+      fixtureRoundNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'fixtureRoundName',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> matchRoundIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
@@ -927,6 +1073,18 @@ extension FixturesQueryLinks
 }
 
 extension FixturesQuerySortBy on QueryBuilder<Fixtures, Fixtures, QSortBy> {
+  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByFixtureRoundName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fixtureRoundName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByFixtureRoundNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fixtureRoundName', Sort.desc);
+    });
+  }
+
   QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByMatchRound() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'matchRound', Sort.asc);
@@ -978,6 +1136,18 @@ extension FixturesQuerySortThenBy
     });
   }
 
+  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByFixtureRoundName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fixtureRoundName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByFixtureRoundNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fixtureRoundName', Sort.desc);
+    });
+  }
+
   QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByMatchRound() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'matchRound', Sort.asc);
@@ -1017,6 +1187,14 @@ extension FixturesQuerySortThenBy
 
 extension FixturesQueryWhereDistinct
     on QueryBuilder<Fixtures, Fixtures, QDistinct> {
+  QueryBuilder<Fixtures, Fixtures, QDistinct> distinctByFixtureRoundName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'fixtureRoundName',
+          caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Fixtures, Fixtures, QDistinct> distinctByMatchRound() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'matchRound');
@@ -1041,6 +1219,12 @@ extension FixturesQueryProperty
   QueryBuilder<Fixtures, int, QQueryOperations> fixtureIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'fixtureId');
+    });
+  }
+
+  QueryBuilder<Fixtures, String, QQueryOperations> fixtureRoundNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'fixtureRoundName');
     });
   }
 

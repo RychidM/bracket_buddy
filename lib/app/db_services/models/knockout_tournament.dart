@@ -1,3 +1,4 @@
+import 'package:bracket_buddy/app/modules/fixtures/controllers/fixtures_controller.dart';
 import 'package:isar/isar.dart';
 
 import '../collections/fixtures_db_model.dart';
@@ -22,7 +23,8 @@ class KnockoutTournament {
         ..playerOne.value = players[i]
         ..playerTwo.value = players[numberOfPlayers - i - 1]
         ..tournament.value = tournament
-        ..matchRound = tournament.knockoutTournament?.currentRound += 1;
+        ..fixtureRoundName = FixturesController.getCurrentRoundName(players, 1)
+        ..matchRound = 1;
       fixtures.add(fixture);
     }
     tournament.knockoutTournament?.currentRound++;
@@ -44,7 +46,9 @@ class KnockoutTournament {
         ..playerOne.value = playerOne
         ..playerTwo.value = playerTwo
         ..tournament.value = tournament
-        ..matchRound = tournament.knockoutTournament?.currentRound);
+        ..fixtureRoundName = FixturesController.getCurrentRoundName(
+            winners, tournament.knockoutTournament!.currentRound + 1)
+        ..matchRound = tournament.knockoutTournament?.currentRound += 1);
     }
 
     tournament.knockoutTournament?.currentRound++;

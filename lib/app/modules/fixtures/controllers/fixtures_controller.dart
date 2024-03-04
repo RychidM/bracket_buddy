@@ -29,14 +29,41 @@ class FixturesController extends GetxController {
 
   void generateNextFixtures() async {
     final tournament = fixturesState.fixtures.first.tournament.value;
-    List<Player> winners = await _playerRepo
-        .getPlayerByEliminationStatus(tournament!.tournamentId);
 
-    fixturesState.nextFixtures = tournament.knockoutTournament
-            ?.generateNextSetOfMatched(winners, tournament) ??
-        [];
+    List<Fixtures> nextFixtures = await _fixturesRepo.getRoundFixtures(
+        tournament!.tournamentId, fixturesState.fixtures.first.matchRound! + 1);
 
-    Get.toNamed(Routes.FIXTURE_INFO, arguments: fixturesState.nextFixtures);
+    if (nextFixtures.isEmpty) {
+      List<Player> winners =
+          await _playerRepo.getPlayersByWinStatus(tournament.tournamentId);
+
+      nextFixtures = tournament.knockoutTournament
+              ?.generateNextSetOfMatched(winners, tournament) ??
+          [];
+
+      nextFixtures = await _fixturesRepo.createMultiRecords(nextFixtures)
+          as List<Fixtures>;
+    }
+
+    fixturesState.nextFixtures = nextFixtures;
+    Get.toNamed(Routes.FIXTURE_INFO, arguments: nextFixtures);
+  }
+
+  static String getCurrentRoundName(List<Player> players, int currentRound) {
+    // int playersLeft = players.length ~/ pow(2, currentRound);
+
+    switch (players.length) {
+      case 16:
+        return "Round of 16";
+      case 8:
+        return "Quarter Finals";
+      case 4:
+        return "Semi Finals";
+      case 2:
+        return "Final";
+      default:
+        return "Round $currentRound";
+    }
   }
 
   bool fixturesHasWinner() {
