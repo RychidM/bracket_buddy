@@ -67,10 +67,12 @@ class FixturesRepository extends DbServiceAdaptor<Fixtures> {
   @override
   Future<void> updateRecord(Fixtures record) async {
     isar = await _dbService.tournamentDb;
-    final fixture = await isar.fixtures.get(record.fixtureId);
-    if (fixture != null) {
-      await isar.fixtures.put(record);
-    }
+    await isar.writeTxn(() async {
+      final fixture = await isar.fixtures.get(record.fixtureId);
+      if (fixture != null) {
+        await isar.fixtures.put(record);
+      }
+    });
   }
 
   Future<List<Fixtures>> getFixturesByTournamentId(int tournamentId) async {
@@ -85,9 +87,33 @@ class FixturesRepository extends DbServiceAdaptor<Fixtures> {
   Future<void> deleteFixtureAssociatedWithTournament(int tournamentId) async {
     isar = await _dbService.tournamentDb;
     await isar.writeTxn(() => isar.fixtures
-            .where()
-            .filter()
-            .tournament((q) => q.tournamentIdEqualTo(tournamentId))
-            .deleteAll());
+        .where()
+        .filter()
+        .tournament((q) => q.tournamentIdEqualTo(tournamentId))
+        .deleteAll());
+  }
+
+  Future<List<Fixtures>> getFixturesByPlayer(int playerId) async {
+    isar = await _dbService.tournamentDb;
+    List<Fixtures> fixtures = [];
+    fixtures = await isar.fixtures
+        .where()
+        .filter()
+        .playerOne((player) => player.playerIdEqualTo(playerId))
+        .findAll();
+    return fixtures;
+  }
+  
+  @override
+  Future<void> updateMultiRecords(List<Fixtures> records) async{
+    isar = await _dbService.tournamentDb;
+    await isar.writeTxn(() async {
+      for (var record in records) {
+        final fixture = await isar.fixtures.get(record.fixtureId);
+        if (fixture != null) {
+          await isar.fixtures.put(record);
+        }
+      }
+    });
   }
 }

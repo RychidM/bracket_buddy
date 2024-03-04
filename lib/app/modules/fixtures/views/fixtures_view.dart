@@ -52,45 +52,91 @@ class FixturesView extends GetView<FixturesController> {
             ),
             Gap(10.h),
             Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: controller.fixturesState.fixtures.length,
-                itemBuilder: (context, index) {
-                  Color avatarBgColor = BuddyUtils.getAccentColor(index);
-                  Color avatarBgColor2 = BuddyUtils.getAccentColor(index + 1);
-                  Fixtures fixture = controller.fixturesState.fixtures[index];
-                  return Container(
-                    padding: AppTheme.bPadding5,
-                    width: double.maxFinite,
-                    margin: EdgeInsets.only(bottom: 10.h),
-                    decoration: BoxDecoration(
-                      borderRadius: AppTheme.bRoundedBorderNoSide,
-                      border: Border.all(color: AppColors.borderGrey),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        PlayerAvatarWidget(
-                          avatarBgColor: avatarBgColor,
-                          reverseOder: true,
-                          gamerTag: fixture.playerOne.value?.gamerTag ?? "",
-                          imgString: fixture.playerOne.value?.avatar ?? "",
-                        ),
-                        const BuddyBodyText(
-                          text: "VS",
-                          textColor: AppColors.primaryGreenLight,
-                          fontSize: 14,
-                        ),
-                        PlayerAvatarWidget(
-                          avatarBgColor: avatarBgColor2,
-                          gamerTag: fixture.playerTwo.value?.gamerTag ?? "",
-                          imgString: fixture.playerTwo.value?.avatar ?? "",
-                        ),
-                      ],
-                    ),
-                  );
-                },
+              child: Obx(
+                () => ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: controller.fixturesState.fixtures.length,
+                  itemBuilder: (context, index) {
+                    Color avatarBgColor = BuddyUtils.getAccentColor(index);
+                    Color avatarBgColor2 = BuddyUtils.getAccentColor(index + 1);
+                    Fixtures fixture = controller.fixturesState.fixtures[index];
+                    return FixturesWidget(
+                      avatarBgColor: avatarBgColor,
+                      fixture: fixture,
+                      avatarBgColor2: avatarBgColor2,
+                      p1OnTap: () =>
+                          controller.updatePlayerEliminationStatusInKO(
+                              fixture.playerOne.value!, fixture),
+                      p2OnTap: () =>
+                          controller.updatePlayerEliminationStatusInKO(
+                              fixture.playerTwo.value!, fixture),
+                      onTap: () {
+                        controller.getPlayerFixtures(fixture);
+                      },
+                    );
+                  },
+                ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class FixturesWidget extends StatelessWidget {
+  const FixturesWidget({
+    super.key,
+    required this.avatarBgColor,
+    required this.fixture,
+    required this.avatarBgColor2,
+    this.onTap,
+    this.p1OnTap,
+    this.p2OnTap,
+  });
+
+  final Color avatarBgColor;
+  final Fixtures fixture;
+  final Color avatarBgColor2;
+  final VoidCallback? onTap;
+  final VoidCallback? p1OnTap;
+  final VoidCallback? p2OnTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: AppTheme.bPadding5,
+        width: double.maxFinite,
+        margin: EdgeInsets.only(bottom: 10.h),
+        decoration: BoxDecoration(
+          borderRadius: AppTheme.bRoundedBorderNoSide,
+          border: Border.all(color: AppColors.borderGrey),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            PlayerAvatarWidget(
+              avatarBgColor: avatarBgColor,
+              reverseOder: true,
+              gamerTag: fixture.playerOne.value?.gamerTag ?? "",
+              imgString: fixture.playerOne.value?.avatar ?? "",
+              p1OnTap: p1OnTap,
+              isWinner: fixture.playerTwo.value?.winStatus == true,
+            ),
+            const BuddyBodyText(
+              text: "VS",
+              textColor: AppColors.primaryGreenLight,
+              fontSize: 14,
+            ),
+            PlayerAvatarWidget(
+              p1OnTap: p2OnTap,
+              avatarBgColor: avatarBgColor2,
+              gamerTag: fixture.playerTwo.value?.gamerTag ?? "",
+              imgString: fixture.playerTwo.value?.avatar ?? "",
+              isWinner: fixture.playerOne.value?.winStatus == true,
             ),
           ],
         ),
@@ -106,12 +152,16 @@ class PlayerAvatarWidget extends StatelessWidget {
     this.imgString = Assets.avatarsAang,
     this.gamerTag = "Player 1",
     this.reverseOder = false,
+    this.isWinner = false,
+    this.p1OnTap,
   });
 
   final Color avatarBgColor;
   final String imgString;
   final String gamerTag;
   final bool reverseOder;
+  final bool isWinner;
+  final VoidCallback? p1OnTap;
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +169,11 @@ class PlayerAvatarWidget extends StatelessWidget {
       children: reverseOder
           ? [
               PlayerAvatarContainer(
-                  avatarBgColor: avatarBgColor, imgString: imgString),
+                playerOnTap: p1OnTap,
+                avatarBgColor: avatarBgColor,
+                imgString: imgString,
+                isWinner: isWinner,
+              ),
               Gap(6.w),
               BuddyBodyText(
                 text: gamerTag,
@@ -133,7 +187,11 @@ class PlayerAvatarWidget extends StatelessWidget {
               ),
               Gap(6.w),
               PlayerAvatarContainer(
-                  avatarBgColor: avatarBgColor, imgString: imgString),
+                playerOnTap: p1OnTap,
+                avatarBgColor: avatarBgColor,
+                imgString: imgString,
+                isWinner: isWinner,
+              ),
             ],
     );
   }
@@ -145,39 +203,60 @@ class PlayerAvatarContainer extends StatelessWidget {
     required this.avatarBgColor,
     required this.imgString,
     this.isWinner = false,
+    this.playerOnTap,
   });
 
   final Color avatarBgColor;
   final String imgString;
   final bool isWinner;
+  final VoidCallback? playerOnTap;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 3.h),
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: isWinner
-            ? Border.all(width: 1.w, color: AppColors.promotionGreen)
-            : Border(
-                right: BorderSide(color: avatarBgColor, width: 1.w),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        GestureDetector(
+          onTap: playerOnTap,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 3.h),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: isWinner
+                  ? Border.all(width: 1.w, color: AppColors.promotionGreen)
+                  : Border(
+                      right: BorderSide(color: avatarBgColor, width: 1.w),
+                    ),
+            ),
+            child: Container(
+              height: 35.h,
+              width: 35.w,
+              decoration: BoxDecoration(
+                borderRadius: AppTheme.bRoundedBorderNoSide,
+                color: avatarBgColor.withOpacity(.15),
               ),
-      ),
-      child: Container(
-        height: 35.h,
-        width: 35.w,
-        decoration: BoxDecoration(
-          borderRadius: AppTheme.bRoundedBorderNoSide,
-          color: avatarBgColor.withOpacity(.15),
-        ),
-        child: ClipRRect(
-          borderRadius: AppTheme.bRoundedBorderNoSide,
-          child: Image.asset(
-            imgString,
-            height: 35.h,
+              child: ClipRRect(
+                borderRadius: AppTheme.bRoundedBorderNoSide,
+                child: Image.asset(
+                  imgString,
+                  height: 35.h,
+                ),
+              ),
+            ),
           ),
         ),
-      ),
+        Visibility(
+          visible: isWinner,
+          child: Positioned(
+            top: -10.h,
+            right: -15.w,
+            child: Image.asset(
+              Assets.iconsCrown,
+              height: 30.h,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

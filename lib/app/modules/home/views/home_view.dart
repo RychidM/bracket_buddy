@@ -8,6 +8,7 @@ import 'package:bracket_buddy/generated/assets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
@@ -57,57 +58,79 @@ class HomeView extends GetView<HomeController> {
                       headerTitle: "Continue where you left off",
                     ),
                     Gap(10.h),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: controller.homeState.tournaments.length,
-                        padding: EdgeInsets.zero,
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) => Dismissible(
-                          direction: DismissDirection.endToStart,
-                          background: Container(
-                            width: double.maxFinite,
-                            margin: EdgeInsets.only(bottom: 10.h),
-                            decoration: BoxDecoration(
-                              color: AppColors.redColor,
-                              borderRadius: BorderRadius.circular(7.r),
-                              border: Border.all(color: AppColors.borderGrey),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                BuddyBodyText(
-                                  text: "D  E  L  E  T  E    ",
-                                  textColor: AppColors.whiteColor,
-                                  fontWeight: FontWeight.w700,
-                                )
-                              ],
-                            ),
-                          ),
-                          key: UniqueKey(),
-                          onDismissed: (direction) =>
-                              controller.deleteTournament(controller
-                                  .homeState.tournaments[index].tournamentId),
-                          child: Container(
-                            width: double.maxFinite,
-                            margin: EdgeInsets.only(bottom: 10.h),
-                            decoration: BoxDecoration(
-                              color: AppColors.whiteColor,
-                              borderRadius: BorderRadius.circular(7.r),
-                              border: Border.all(color: AppColors.borderGrey),
-                            ),
-                            child: ListTile(
-                              onTap: () => {
-                                controller.tournamentSelected(controller
-                                    .homeState.tournaments[index].tournamentId),
-                                HapticFeedback.lightImpact(),
-                              },
-                              title: BuddyBodyText(
-                                  text:
-                                      "${controller.homeState.tournaments[index].tournamentName} Tournament"),
-                            ),
-                          ),
+                    Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const BuddyBodyText(text: "Tournaments"),
+                            GestureDetector(
+                                onTap: () {
+                                  HapticFeedback.heavyImpact();
+                                  controller.clearDb();
+                                },
+                                child: SvgPicture.asset(Assets.iconsClose)),
+                          ],
                         ),
-                      ),
+                        Gap(15.h),
+                        Obx(() => ListView.builder(
+                              itemCount:
+                                  controller.homeState.tournaments.length,
+                              padding: EdgeInsets.zero,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) => Dismissible(
+                                direction: DismissDirection.endToStart,
+                                background: Container(
+                                  width: double.maxFinite,
+                                  margin: EdgeInsets.only(bottom: 10.h),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.redColor,
+                                    borderRadius: BorderRadius.circular(7.r),
+                                    border:
+                                        Border.all(color: AppColors.borderGrey),
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      BuddyBodyText(
+                                        text: "D  E  L  E  T  E    ",
+                                        textColor: AppColors.whiteColor,
+                                        fontWeight: FontWeight.w700,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                key: UniqueKey(),
+                                onDismissed: (direction) =>
+                                    controller.deleteTournament(controller
+                                        .homeState
+                                        .tournaments[index]
+                                        .tournamentId),
+                                child: Container(
+                                  width: double.maxFinite,
+                                  margin: EdgeInsets.only(bottom: 10.h),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.whiteColor,
+                                    borderRadius: BorderRadius.circular(7.r),
+                                    border:
+                                        Border.all(color: AppColors.borderGrey),
+                                  ),
+                                  child: ListTile(
+                                    onTap: () => {
+                                      controller.tournamentSelected(controller
+                                          .homeState
+                                          .tournaments[index]
+                                          .tournamentId),
+                                      HapticFeedback.lightImpact(),
+                                    },
+                                    title: BuddyBodyText(
+                                        text:
+                                            "${controller.homeState.tournaments[index].tournamentName} Tournament"),
+                                  ),
+                                ),
+                              ),
+                            )),
+                      ],
                     )
                   ],
                 ),

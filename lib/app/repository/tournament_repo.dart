@@ -64,4 +64,17 @@ class TournamentRepository extends DbServiceAdaptor<Tournament> {
       }
     });
   }
+  
+  @override
+  Future<void> updateMultiRecords(List<Tournament> records) async{
+    isar = await _dbService.tournamentDb;
+    await isar.writeTxn(() async {
+      for (var record in records) {
+        final tournament = await isar.tournaments.get(record.tournamentId);
+        if (tournament != null) {
+          await isar.tournaments.put(record);
+        }
+      }
+    });
+  }
 }

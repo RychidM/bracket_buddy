@@ -34,5 +34,6 @@ class IsarDbService {
     final isar = await tournamentDb;
 
     isar.clear();
+    
   }
 }

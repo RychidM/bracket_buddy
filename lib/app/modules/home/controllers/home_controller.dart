@@ -27,6 +27,7 @@ class HomeController extends GetxController {
 
   void tournamentSelected(int id) async {
     var fixtures = await _fixtureRepo.getFixturesByTournamentId(id);
+    await _fixtureRepo.getAllRecords();
     Get.toNamed(Routes.FIXTURES, arguments: fixtures);
   }
 
@@ -34,5 +35,12 @@ class HomeController extends GetxController {
     await _playerRepo.deletePlayersAssociatedWithTournament(id);
     await _fixtureRepo.deleteFixtureAssociatedWithTournament(id);
     await _tournamentRepo.deleteRecord(id);
+  }
+
+  void clearDb() async {
+    await _playerRepo.clearDb();
+    var stateTournaments = homeState.tournaments;
+    stateTournaments = [];
+    homeState.tournaments = stateTournaments;
   }
 }

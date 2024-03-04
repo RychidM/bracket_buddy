@@ -15,4 +15,6 @@ abstract class DbServiceAdaptor<T> {
   Future<void> deleteRecord(int id);
 
   Future<void> deleteMultiRecords(List<int> ids);
+
+  Future<void> updateMultiRecords(List<T> records);
 }

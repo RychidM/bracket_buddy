@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/fixture_info/bindings/fixture_info_binding.dart';
+import '../modules/fixture_info/views/fixture_info_view.dart';
 import '../modules/fixtures/bindings/fixtures_binding.dart';
 import '../modules/fixtures/views/fixtures_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -37,6 +39,11 @@ class AppPages {
       name: _Paths.FIXTURES,
       page: () => const FixturesView(),
       binding: FixturesBinding(),
+    ),
+    GetPage(
+      name: _Paths.FIXTURE_INFO,
+      page: () => const FixtureInfoView(),
+      binding: FixtureInfoBinding(),
     ),
   ];
 }
