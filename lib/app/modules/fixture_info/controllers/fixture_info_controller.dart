@@ -1,23 +1,13 @@
 import 'package:get/get.dart';
 
-class FixtureInfoController extends GetxController {
-  //TODO: Implement FixtureInfoController
+import '../../../db_services/collections/fixtures_db_model.dart';
 
-  final count = 0.obs;
+class FixtureInfoController extends GetxController {
   @override
   void onInit() {
+    inComingFixtures = Get.arguments as List<Fixtures>;
     super.onInit();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
+  late List<Fixtures> inComingFixtures;
 }

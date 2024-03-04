@@ -3,6 +3,7 @@ import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/modules/fixtures/controllers/fixtures_state.dart';
 import 'package:bracket_buddy/app/modules/fixtures/views/fixture_details_view.dart';
 import 'package:bracket_buddy/app/repository/fixtures_repo.dart';
+import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 import '../../../repository/player_repo.dart';
@@ -24,6 +25,28 @@ class FixturesController extends GetxController {
 
   void updateStateFixture(Fixtures fixture) {
     fixturesState.selectedFixture = fixture;
+  }
+
+  void generateNextFixtures() async {
+    final tournament = fixturesState.fixtures.first.tournament.value;
+    List<Player> winners = await _playerRepo
+        .getPlayerByEliminationStatus(tournament!.tournamentId);
+
+    fixturesState.nextFixtures = tournament.knockoutTournament
+            ?.generateNextSetOfMatched(winners, tournament) ??
+        [];
+
+    Get.toNamed(Routes.FIXTURE_INFO, arguments: fixturesState.nextFixtures);
+  }
+
+  bool fixturesHasWinner() {
+    for (var fixture in fixturesState.fixtures) {
+      if (fixture.playerOne.value?.winStatus != true &&
+          fixture.playerTwo.value?.winStatus != true) {
+        return false;
+      }
+    }
+    return true;
   }
 
   void getPlayerFixtures(Fixtures fixture) async {
@@ -58,7 +81,8 @@ class FixturesController extends GetxController {
         fixture.playerTwo.value?.winStatus = false;
       }
 
-      await _playerRepo.updateMultiRecords([fixture.playerOne.value!, fixture.playerTwo.value!]);
+      await _playerRepo.updateMultiRecords(
+          [fixture.playerOne.value!, fixture.playerTwo.value!]);
       stateFixtures[indexOf] = fixture;
     }
   }

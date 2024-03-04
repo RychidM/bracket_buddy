@@ -28,4 +28,8 @@ class FixturesState {
   final Rx<Fixtures> _selectedFixture = Fixtures().obs;
   Fixtures get selectedFixture => _selectedFixture.value;
   set selectedFixture(Fixtures fixture) => _selectedFixture.value = fixture;
+
+  final RxList<Fixtures> _nextFixtures = <Fixtures>[].obs;
+  List<Fixtures> get nextFixtures => _nextFixtures;
+  set nextFixtures(List<Fixtures> fixtures) => _nextFixtures.value = fixtures;
 }

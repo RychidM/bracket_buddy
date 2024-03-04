@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../controllers/fixture_info_controller.dart';
 
 class FixtureInfoView extends GetView<FixtureInfoController> {
-  const FixtureInfoView({Key? key}) : super(key: key);
+  const FixtureInfoView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

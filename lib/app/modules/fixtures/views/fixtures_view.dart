@@ -3,6 +3,7 @@ import 'package:bracket_buddy/app/data/theme/app_theme.dart';
 import 'package:bracket_buddy/app/data/utils.dart';
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:bracket_buddy/app/routes/app_pages.dart';
+import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/create_tournament_header.dart';
 import 'package:bracket_buddy/app/widgets/screen_template.dart';
 import 'package:bracket_buddy/app/widgets/text_widgets/body_text.dart';
@@ -23,7 +24,16 @@ class FixturesView extends GetView<FixturesController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BuddyScreenTemplate(
-        isHintVisible: false,
+        isHintVisible: true,
+        bottomWidget: BuddyButton(
+          onTap: () => controller.fixturesHasWinner()
+              ? controller.generateNextFixtures()
+              : Get.snackbar(
+                  "Error", "Please select a winner for all fixtures"),
+          btnColor: AppColors.whiteColor,
+          label: "Next Round",
+          labelColor: AppColors.primaryTextColor,
+        ),
         mainChild: Column(
           children: [
             Stack(
