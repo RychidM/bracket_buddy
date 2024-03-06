@@ -11,7 +11,15 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
   @override
   Future<List<Player?>> createMultiRecords(List<Player> records) async {
     isar = await _dbService.tournamentDb;
-    List<int> ids = await isar.writeTxn(() => isar.players.putAll(records));
+    List<int> ids = await isar.writeTxn(() async {
+      var returnedIds = await isar.players.putAll(records);
+      for (var record in records) {
+        await isar.tournaments.put(record.tournaments.value!);
+        await record.tournaments.save();
+      }
+      return returnedIds;
+    });
+
     return await isar.players.getAll(ids);
   }
 
@@ -94,14 +102,9 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
 
   Future<List<Player>> getPlayersByWinStatus(int id) async {
     isar = await _dbService.tournamentDb;
-    var res = await isar.players
-        .where()
-        .winStatusEqualTo(true)
-        .filter()
-        .tournaments((q) => q.tournamentIdEqualTo(id))
-        .findAll()
-        .then((value) {});
-        res as List<Player>;
+    List<Player> res =
+        await isar.players.where().winStatusEqualTo(true).findAll();
+
     print(res.map((e) => e.gamerTag).toList());
     return res;
   }

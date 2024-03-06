@@ -87,10 +87,9 @@ class FixturesRepository extends DbServiceAdaptor<Fixtures> {
   Future<List<Fixtures>> getRoundFixtures(int tournamentId, int round) async {
     isar = await _dbService.tournamentDb;
     return await isar.fixtures
-        .where()
+        .where().matchRoundEqualTo(round)
         .filter()
         .tournament((q) => q.tournamentIdEqualTo(tournamentId))
-        .matchRoundEqualTo(round)
         .findAll();
   }
 
