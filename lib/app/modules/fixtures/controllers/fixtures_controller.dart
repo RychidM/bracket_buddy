@@ -28,25 +28,37 @@ class FixturesController extends GetxController {
   }
 
   void generateNextFixtures() async {
-    final tournament = fixturesState.fixtures.first.tournament.value;
+    try {
+      final tournament = fixturesState.fixtures.first.tournament.value;
 
-    List<Fixtures> nextFixtures = await _fixturesRepo.getRoundFixtures(
-        tournament!.tournamentId, fixturesState.fixtures.first.matchRound! + 1);
+      List<Fixtures> nextFixtures = await _fixturesRepo.getRoundFixtures(
+              tournament!.tournamentId, fixturesState.fixtures.first.matchRound! + 1);
 
-    if (nextFixtures.isEmpty) {
-      List<Player> winners =
-          await _playerRepo.getPlayersByWinStatus(tournament.tournamentId);
+      if (nextFixtures.isEmpty) {
+            List<Player> winners =
+                await _playerRepo.getPlayersByWinStatus(tournament.tournamentId);
 
-      nextFixtures = tournament.knockoutTournament
-              ?.generateNextSetOfMatched(winners, tournament) ??
-          [];
 
-      nextFixtures = await _fixturesRepo.createMultiRecords(nextFixtures)
-          as List<Fixtures>;
+            nextFixtures = tournament.knockoutTournament
+                    ?.generateNextSetOfMatched(winners, tournament) ??
+                [];
+
+            nextFixtures = await _fixturesRepo.createMultiRecords(nextFixtures);
+
+        for (var player in nextFixtures) {
+          if(player.playerOne.value!.winStatus == true ){
+            player.playerOne.value!.winStatus = false;
+          }
+        }
+
+          }
+
+      fixturesState.nextFixtures = nextFixtures;
+      Get.toNamed(Routes.FIXTURE_INFO, arguments: nextFixtures);
+    } on Exception catch (e) {
+      Get.snackbar("Error", "Error generating fixtures");
+      print(e);
     }
-
-    fixturesState.nextFixtures = nextFixtures;
-    Get.toNamed(Routes.FIXTURE_INFO, arguments: nextFixtures);
   }
 
   static String getCurrentRoundName(List<Player> players, int currentRound) {

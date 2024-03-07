@@ -6,6 +6,8 @@ import 'package:bracket_buddy/app/db_services/models/knockout_tournament.dart';
 import 'package:bracket_buddy/app/db_services/models/league_tournament.dart';
 import 'package:bracket_buddy/app/modules/tournament/controllers/tournament_state.dart';
 import 'package:bracket_buddy/app/modules/tournament/data/tournament_dummy_data.dart';
+import 'package:bracket_buddy/app/repository/player_repo.dart';
+import 'package:bracket_buddy/app/repository/tournament_repo.dart';
 import 'package:english_words/english_words.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +19,8 @@ class TournamentController extends GetxController {
   TournamentState tournamentState = TournamentState();
 
   final FixturesRepository _fixturesRepo = FixturesRepository();
+  final _tournamentRepo = TournamentRepository();
+  final _playerRepo = PlayerRepository();
 
   @override
   void onInit() async {
@@ -92,20 +96,34 @@ class TournamentController extends GetxController {
   }
 
   setUpTournament() async {
-    List<Fixtures> fixtures = [];
-    if (tournamentState.tournamentType == TournamentType.knockout) {
-      fixtures = tournamentState.tournament.knockoutTournament
-              ?.generateKnockOutMatches(
-                  tournamentState.players, tournamentState.tournament) ??
-          [];
-    } else {
-      fixtures = tournamentState.tournament.leagueTournament
-              ?.generateLeagueFixtures(
-                  tournamentState.players, tournamentState.tournament) ??
-          [];
+    try {
+      List<Fixtures> fixtures = [];
+      Tournament savedTournament =
+          await _tournamentRepo.createRecord(tournamentState.tournament) ??
+              tournamentState.tournament;
+
+      List<Player> savedPlayers =
+          await _playerRepo.createMultiRecords(tournamentState.players);
+      tournamentState.tournament;
+
+      if (tournamentState.tournamentType == TournamentType.knockout) {
+        fixtures = tournamentState.tournament.knockoutTournament
+                ?.generateKnockOutMatches(savedPlayers, savedTournament) ??
+            [];
+      } else {
+        fixtures = tournamentState.tournament.leagueTournament
+                ?.generateLeagueFixtures(savedPlayers, savedTournament) ??
+            [];
+      }
+      var newFixtures = await _fixturesRepo.createMultiRecords(fixtures);
+      tournamentState.fixtures = newFixtures
+          .where((element) => element != null)
+          .toList()
+          .cast<Fixtures>();
+      Get.offNamed(Routes.FIXTURES, arguments: tournamentState.fixtures);
+    } on Exception catch (e) {
+      print(e);
+      Get.snackbar("Error", "Error creating fixtures");
     }
-    var newFixtures = await _fixturesRepo.createMultiRecords(fixtures);
-    tournamentState.fixtures = newFixtures.where((element) => element != null).toList().cast<Fixtures>();
-    Get.offNamed(Routes.FIXTURES, arguments: tournamentState.fixtures);
   }
 }

@@ -1,3 +1,4 @@
+
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
@@ -10,21 +11,28 @@ class FixturesRepository extends DbServiceAdaptor<Fixtures> {
   final IsarDbService _dbService = IsarDbService();
 
   @override
-  Future<List<Fixtures?>> createMultiRecords(List<Fixtures> records) async {
-    isar = await _dbService.tournamentDb;
-    List<int> ids = await isar.writeTxn(() async {
-      var returnedIds = isar.fixtures.putAll(records);
-      for (var element in records) {
-        await isar.players.put(element.playerOne.value!);
-        await isar.players.put(element.playerTwo.value!);
-        await isar.tournaments.put(element.tournament.value!);
-        await element.playerOne.save();
-        await element.playerTwo.save();
-        await element.tournament.save();
-      }
-      return returnedIds;
-    });
-    return await isar.fixtures.getAll(ids);
+  Future<List<Fixtures>> createMultiRecords(List<Fixtures> records) async {
+    try {
+      isar = await _dbService.tournamentDb;
+      List<int> ids = await isar.writeTxn(() async {
+            var returnedIds = await isar.fixtures.putAll(records);
+            for (var element in records) {
+              await isar.players.put(element.playerOne.value!);
+              await isar.players.put(element.playerTwo.value!);
+              await isar.tournaments.put(element.tournament.value!);
+              await element.playerOne.save();
+              await element.playerTwo.save();
+              await element.tournament.save();
+            }
+            return returnedIds;
+          });
+      var returnedFixtures = await isar.fixtures.getAll(ids);
+      return returnedFixtures.whereType<Fixtures>().toList();
+    } on Exception catch (e) {
+      print(e);
+      rethrow;
+    }
+
   }
 
   @override
@@ -75,19 +83,11 @@ class FixturesRepository extends DbServiceAdaptor<Fixtures> {
     });
   }
 
-  Future<List<Fixtures>> getFixturesByTournamentId(int tournamentId) async {
-    isar = await _dbService.tournamentDb;
-    return await isar.fixtures
-        .where()
-        .filter()
-        .tournament((q) => q.tournamentIdEqualTo(tournamentId))
-        .findAll();
-  }
-
   Future<List<Fixtures>> getRoundFixtures(int tournamentId, int round) async {
     isar = await _dbService.tournamentDb;
     return await isar.fixtures
-        .where().matchRoundEqualTo(round)
+        .where()
+        .matchRoundEqualTo(round)
         .filter()
         .tournament((q) => q.tournamentIdEqualTo(tournamentId))
         .findAll();
@@ -112,9 +112,9 @@ class FixturesRepository extends DbServiceAdaptor<Fixtures> {
         .findAll();
     return fixtures;
   }
-  
+
   @override
-  Future<void> updateMultiRecords(List<Fixtures> records) async{
+  Future<void> updateMultiRecords(List<Fixtures> records) async {
     isar = await _dbService.tournamentDb;
     await isar.writeTxn(() async {
       for (var record in records) {

@@ -22,7 +22,7 @@ class KnockoutTournament {
       Fixtures fixture = Fixtures()
         ..playerOne.value = players[i]
         ..playerTwo.value = players[numberOfPlayers - i - 1]
-        ..tournament.value = tournament
+        ..tournament.value = players.first.tournaments.value
         ..fixtureRoundName = FixturesController.getCurrentRoundName(players, 1)
         ..matchRound = 1;
       fixtures.add(fixture);
@@ -48,7 +48,7 @@ class KnockoutTournament {
         ..tournament.value = tournament
         ..fixtureRoundName = FixturesController.getCurrentRoundName(
             winners, tournament.knockoutTournament!.currentRound + 1)
-        ..matchRound = tournament.knockoutTournament?.currentRound += 1);
+        ..matchRound = (tournament.knockoutTournament?.currentRound ++));
     }
 
     tournament.knockoutTournament?.currentRound++;

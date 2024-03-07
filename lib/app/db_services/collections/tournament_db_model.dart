@@ -1,3 +1,4 @@
+import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/db_services/models/league_tournament.dart';
 import 'package:isar/isar.dart';
 
@@ -18,6 +19,7 @@ class Tournament {
   LeagueTournament? leagueTournament;
 
   KnockoutTournament? knockoutTournament;
+
 }
 
 enum TournamentType {

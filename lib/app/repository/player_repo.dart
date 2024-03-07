@@ -8,19 +8,26 @@ import '../db_services/collections/player_db_model.dart';
 class PlayerRepository extends DbServiceAdaptor<Player> {
   late Isar isar;
   final IsarDbService _dbService = IsarDbService();
-  @override
-  Future<List<Player?>> createMultiRecords(List<Player> records) async {
-    isar = await _dbService.tournamentDb;
-    List<int> ids = await isar.writeTxn(() async {
-      var returnedIds = await isar.players.putAll(records);
-      for (var record in records) {
-        await isar.tournaments.put(record.tournaments.value!);
-        await record.tournaments.save();
-      }
-      return returnedIds;
-    });
 
-    return await isar.players.getAll(ids);
+  @override
+  Future<List<Player>> createMultiRecords(List<Player> records) async {
+    try {
+      isar = await _dbService.tournamentDb;
+      List<int> ids = await isar.writeTxn(() async {
+        var returnedIds = await isar.players.putAll(records);
+        for (var record in records) {
+          await isar.tournaments.put(record.tournaments.value!);
+          await record.tournaments.save();
+        }
+        return returnedIds;
+      });
+
+      List<Player?> returnedPlayers = await isar.players.getAll(ids);
+      return returnedPlayers.whereType<Player>().toList();
+    } on Exception catch (e) {
+      print(e);
+      rethrow;
+    }
   }
 
   @override
@@ -102,8 +109,12 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
 
   Future<List<Player>> getPlayersByWinStatus(int id) async {
     isar = await _dbService.tournamentDb;
-    List<Player> res =
-        await isar.players.where().winStatusEqualTo(true).findAll();
+    List<Player> res = await isar.players
+        .where()
+        .winStatusEqualTo(true)
+        .filter()
+        .tournaments((q) => q.tournamentIdEqualTo(id))
+        .findAll();
 
     print(res.map((e) => e.gamerTag).toList());
     return res;
