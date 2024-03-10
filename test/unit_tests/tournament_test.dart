@@ -12,7 +12,7 @@ void main() {
 
       List<Player> winners = [];
       final nextRoundMatches =
-          tournament.generateNextSetOfMatched(winners, tour);
+          tournament.generateNextSetOfMatches(winners, tour);
 
       expect(nextRoundMatches, isEmpty);
     });
@@ -28,7 +28,7 @@ void main() {
         Player()..gamerTag = 'Player  4',
       ];
       final nextRoundMatches =
-          tournament.generateNextSetOfMatched(winners, tour);
+          tournament.generateNextSetOfMatches(winners, tour);
 
       expect(nextRoundMatches.length, 2);
       expect(nextRoundMatches[0].playerOne.value?.gamerTag, 'Player  1');
@@ -48,7 +48,7 @@ void main() {
       ];
 
       final nextRoundMatches =
-          tournament.generateNextSetOfMatched(winners, tour);
+          tournament.generateNextSetOfMatches(winners, tour);
 
       expect(nextRoundMatches.length, 0);
       expect(nextRoundMatches, []);
@@ -60,7 +60,7 @@ void main() {
 
       final winners = [Player()..gamerTag = 'Player  1'];
       final nextRoundMatches =
-          tournament.generateNextSetOfMatched(winners, tour);
+          tournament.generateNextSetOfMatches(winners, tour);
 
       expect(nextRoundMatches, isEmpty);
     });
@@ -74,7 +74,7 @@ void main() {
         (index) => Player()..gamerTag = 'Player  $index',
       );
       final nextRoundMatches =
-          tournament.generateNextSetOfMatched(winners, tour);
+          tournament.generateNextSetOfMatches(winners, tour);
 
       expect(nextRoundMatches.length,
           50); //  100 winners should result in  50 matches

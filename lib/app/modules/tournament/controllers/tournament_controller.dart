@@ -110,16 +110,14 @@ class TournamentController extends GetxController {
         fixtures = tournamentState.tournament.knockoutTournament
                 ?.generateKnockOutMatches(savedPlayers, savedTournament) ??
             [];
+
       } else {
         fixtures = tournamentState.tournament.leagueTournament
                 ?.generateLeagueFixtures(savedPlayers, savedTournament) ??
             [];
       }
       var newFixtures = await _fixturesRepo.createMultiRecords(fixtures);
-      tournamentState.fixtures = newFixtures
-          .where((element) => element != null)
-          .toList()
-          .cast<Fixtures>();
+      tournamentState.fixtures = newFixtures;
       Get.offNamed(Routes.FIXTURES, arguments: tournamentState.fixtures);
     } on Exception catch (e) {
       print(e);

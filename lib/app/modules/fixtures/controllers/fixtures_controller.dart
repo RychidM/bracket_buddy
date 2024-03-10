@@ -1,8 +1,10 @@
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
+import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
 import 'package:bracket_buddy/app/modules/fixtures/controllers/fixtures_state.dart';
 import 'package:bracket_buddy/app/modules/fixtures/views/fixture_details_view.dart';
 import 'package:bracket_buddy/app/repository/fixtures_repo.dart';
+import 'package:bracket_buddy/app/repository/tournament_repo.dart';
 import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
@@ -29,32 +31,38 @@ class FixturesController extends GetxController {
 
   void generateNextFixtures() async {
     try {
-      final tournament = fixturesState.fixtures.first.tournament.value;
+      Tournament? tournament = await TournamentRepository().getRecordById(
+              fixturesState.fixtures.first.tournament.value!.tournamentId);
 
-      List<Fixtures> nextFixtures = await _fixturesRepo.getRoundFixtures(
-              tournament!.tournamentId, fixturesState.fixtures.first.matchRound! + 1);
+      if(tournament != null){
+        List<Fixtures> nextFixtures = await _fixturesRepo.getRoundFixtures(
+            tournament.tournamentId,
+            tournament.knockoutTournament!.currentRound);
 
-      if (nextFixtures.isEmpty) {
-            List<Player> winners =
-                await _playerRepo.getPlayersByWinStatus(tournament.tournamentId);
+        if (nextFixtures.isEmpty) {
+          List<Player> winners =
+          await _playerRepo.getPlayersByWinStatus(tournament.tournamentId);
 
+          nextFixtures = tournament.knockoutTournament
+              ?.generateNextSetOfMatches(winners, tournament) ??
+              [];
 
-            nextFixtures = tournament.knockoutTournament
-                    ?.generateNextSetOfMatched(winners, tournament) ??
-                [];
+          nextFixtures = await _fixturesRepo.createMultiRecords(nextFixtures);
 
-            nextFixtures = await _fixturesRepo.createMultiRecords(nextFixtures);
-
-        for (var player in nextFixtures) {
-          if(player.playerOne.value!.winStatus == true ){
-            player.playerOne.value!.winStatus = false;
-          }
         }
 
+        for (var fixture in nextFixtures) {
+          if (fixture.playerOne.value!.winStatus == true) {
+            fixture.playerOne.value!.winStatus = false;
           }
+          if (fixture.playerTwo.value!.winStatus == true) {
+            fixture.playerTwo.value!.winStatus = false;
+          }
+        }
+        fixturesState.nextFixtures = nextFixtures;
+        Get.toNamed(Routes.FIXTURE_INFO, arguments: nextFixtures);
+      }
 
-      fixturesState.nextFixtures = nextFixtures;
-      Get.toNamed(Routes.FIXTURE_INFO, arguments: nextFixtures);
     } on Exception catch (e) {
       Get.snackbar("Error", "Error generating fixtures");
       print(e);
