@@ -29,6 +29,7 @@ dependencies:
   firebase: ^9.0.3
   firebase_analytics: ^10.8.0
   firebase_core: ^2.24.2
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies: 
   build_runner: ^2.4.8
@@ -55,4 +56,5 @@ flutter:
     - assets/launcher_icon/
     - assets/avatars/
     - assets/icons/
+    - .env
 

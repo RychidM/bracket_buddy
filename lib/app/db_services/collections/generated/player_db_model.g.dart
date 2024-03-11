@@ -90,9 +90,9 @@ const PlayerSchema = CollectionSchema(
     )
   },
   links: {
-    r'tournaments': LinkSchema(
-      id: -7870942891485501450,
-      name: r'tournaments',
+    r'tournament': LinkSchema(
+      id: -7170403120664568668,
+      name: r'tournament',
       target: r'Tournament',
       single: true,
     )
@@ -171,13 +171,13 @@ Id _playerGetId(Player object) {
 }
 
 List<IsarLinkBase<dynamic>> _playerGetLinks(Player object) {
-  return [object.tournaments];
+  return [object.tournament];
 }
 
 void _playerAttach(IsarCollection<dynamic> col, Id id, Player object) {
   object.playerId = id;
-  object.tournaments
-      .attach(col, col.isar.collection<Tournament>(), r'tournaments', id);
+  object.tournament
+      .attach(col, col.isar.collection<Tournament>(), r'tournament', id);
 }
 
 extension PlayerQueryWhereSort on QueryBuilder<Player, Player, QWhere> {
@@ -841,16 +841,16 @@ extension PlayerQueryFilter on QueryBuilder<Player, Player, QFilterCondition> {
 extension PlayerQueryObject on QueryBuilder<Player, Player, QFilterCondition> {}
 
 extension PlayerQueryLinks on QueryBuilder<Player, Player, QFilterCondition> {
-  QueryBuilder<Player, Player, QAfterFilterCondition> tournaments(
+  QueryBuilder<Player, Player, QAfterFilterCondition> tournament(
       FilterQuery<Tournament> q) {
     return QueryBuilder.apply(this, (query) {
-      return query.link(q, r'tournaments');
+      return query.link(q, r'tournament');
     });
   }
 
-  QueryBuilder<Player, Player, QAfterFilterCondition> tournamentsIsNull() {
+  QueryBuilder<Player, Player, QAfterFilterCondition> tournamentIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.linkLength(r'tournaments', 0, true, 0, true);
+      return query.linkLength(r'tournament', 0, true, 0, true);
     });
   }
 }

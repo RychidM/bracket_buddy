@@ -11,15 +11,15 @@ part 'knockout_tournament.g.dart';
 class KnockoutTournament {
   late int currentRound;
 
-    List<Fixtures> generateKnockOutMatches(
+    List<Fixture> generateKnockOutMatches(
       List<Player> players, Tournament tournament) {
-    List<Fixtures> fixtures = [];
+    List<Fixture> fixtures = [];
     int numberOfPlayers = players.length;
     int numberOfMatches = numberOfPlayers ~/ 2;
     players.shuffle();
 
     for (int i = 0; i < numberOfMatches; i++) {
-      Fixtures fixture = Fixtures()
+      Fixture fixture = Fixture()
         ..playerOne.value = players[i]
         ..playerTwo.value = players[numberOfPlayers - i - 1]
         ..tournament.value = tournament
@@ -31,9 +31,9 @@ class KnockoutTournament {
     return fixtures;
   }
 
-  List<Fixtures> generateNextSetOfMatches(
+  List<Fixture> generateNextSetOfMatches(
       List<Player> winners, Tournament tournament) {
-    List<Fixtures> nextRoundMatches = [];
+    List<Fixture> nextRoundMatches = [];
     if (winners.isEmpty || winners.length.isOdd) {
       return nextRoundMatches;
     }
@@ -42,7 +42,7 @@ class KnockoutTournament {
       Player playerOne = winners[i];
       Player playerTwo = winners[i + 1];
 
-      nextRoundMatches.add(Fixtures()
+      nextRoundMatches.add(Fixture()
         ..playerOne.value = playerOne
         ..playerTwo.value = playerTwo
         ..tournament.value = tournament

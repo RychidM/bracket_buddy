@@ -79,7 +79,7 @@ class FixturesView extends GetView<FixturesController> {
                   itemBuilder: (context, index) {
                     Color avatarBgColor = BuddyUtils.getAccentColor(index);
                     Color avatarBgColor2 = BuddyUtils.getAccentColor(index + 1);
-                    Fixtures fixture = controller.fixturesState.fixtures[index];
+                    Fixture fixture = controller.fixturesState.fixtures[index];
                     return FixturesWidget(
                       avatarBgColor: avatarBgColor,
                       fixture: fixture,
@@ -117,7 +117,7 @@ class FixturesWidget extends StatelessWidget {
   });
 
   final Color avatarBgColor;
-  final Fixtures fixture;
+  final Fixture fixture;
   final Color avatarBgColor2;
   final VoidCallback? onTap;
   final VoidCallback? p1OnTap;
@@ -144,7 +144,7 @@ class FixturesWidget extends StatelessWidget {
               gamerTag: fixture.playerOne.value?.gamerTag ?? "",
               imgString: fixture.playerOne.value?.avatar ?? "",
               p1OnTap: p1OnTap,
-              isWinner: fixture.playerTwo.value?.winStatus == true,
+              isWinner: fixture.playerOne.value?.winStatus == true,
             ),
             const BuddyBodyText(
               text: "VS",
@@ -156,7 +156,7 @@ class FixturesWidget extends StatelessWidget {
               avatarBgColor: avatarBgColor2,
               gamerTag: fixture.playerTwo.value?.gamerTag ?? "",
               imgString: fixture.playerTwo.value?.avatar ?? "",
-              isWinner: fixture.playerOne.value?.winStatus == true,
+              isWinner: fixture.playerTwo.value?.winStatus == true,
             ),
           ],
         ),

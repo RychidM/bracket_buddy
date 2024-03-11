@@ -1,5 +1,6 @@
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
 import 'package:bracket_buddy/app/db_services/isar_db_service.dart';
+import 'package:bracket_buddy/app/db_services/models/knockout_tournament.dart';
 import 'package:bracket_buddy/app/repository/db_service_Adaptor.dart';
 import 'package:isar/isar.dart';
 
@@ -16,8 +17,8 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
       List<int> ids = await isar.writeTxn(() async {
         var returnedIds = await isar.players.putAll(records);
         for (var record in records) {
-          await isar.tournaments.put(record.tournaments.value!);
-          await record.tournaments.save();
+          await isar.tournaments.put(record.tournament.value!);
+          await record.tournament.save();
         }
         return returnedIds;
       });
@@ -83,7 +84,7 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
     isar = await _dbService.tournamentDb;
     return await isar.players
         .filter()
-        .tournaments((q) => q.tournamentIdEqualTo(tournamentId))
+        .tournament((q) => q.tournamentIdEqualTo(tournamentId))
         .findAll();
   }
 
@@ -97,7 +98,7 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
     isar = await _dbService.tournamentDb;
     return await isar.players
         .filter()
-        .tournaments((q) => q.tournamentTypeEqualTo(type))
+        .tournament((q) => q.tournamentTypeEqualTo(type))
         .findAll();
   }
 
@@ -107,13 +108,16 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
     return await isar.players.where(sort: Sort.desc).sortByPoints().findAll();
   }
 
-  Future<List<Player>> getPlayersByWinStatus(int id) async {
+  Future<List<Player>> getCurrentRoundPlayersByWinStatus(int id, int round) async {
     isar = await _dbService.tournamentDb;
     List<Player> res = await isar.players
         .where()
         .winStatusEqualTo(true)
         .filter()
-        .tournaments((q) => q.tournamentIdEqualTo(id))
+        .tournament((q) => q.tournamentIdEqualTo(id))
+        .and()
+        .tournament(
+            (q) => q.knockoutTournament((q) => q.currentRoundEqualTo(round)))
         .findAll();
 
     print(res.map((e) => e.gamerTag).toList());
@@ -125,7 +129,7 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
     await isar.writeTxn(() => isar.players
         .where()
         .filter()
-        .tournaments((q) => q.tournamentIdEqualTo(id))
+        .tournament((q) => q.tournamentIdEqualTo(id))
         .deleteAll());
   }
 

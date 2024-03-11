@@ -12,9 +12,9 @@ class LeagueTournament {
   LeagueType? leagueType;
 
 
-    List<Fixtures> generateLeagueFixtures(
+    List<Fixture> generateLeagueFixtures(
       List<Player> players, Tournament tournament) {
-    List<Fixtures> fixtures = [];
+    List<Fixture> fixtures = [];
 
     players.shuffle();
 
@@ -31,7 +31,7 @@ class LeagueTournament {
 
         if (playerOne.gamerTag != "Bye-Bye" &&
             playerTwo.gamerTag != "Bye-Bye") {
-          Fixtures fixture = Fixtures()
+          Fixture fixture = Fixture()
             ..playerOne.value = playerOne
             ..playerTwo.value = playerTwo
             ..tournament.value = tournament
@@ -43,7 +43,7 @@ class LeagueTournament {
     }
 
     if (tournament.leagueTournament?.leagueType == LeagueType.doubleLeg) {
-      List<Fixtures> roundTwoFixtures =
+      List<Fixture> roundTwoFixtures =
           fixtures.map((fixture) => fixture.reverseFixture()).toList();
       fixtures.addAll(roundTwoFixtures);
     }

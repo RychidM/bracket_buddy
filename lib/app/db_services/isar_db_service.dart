@@ -17,7 +17,7 @@ class IsarDbService {
     if (Isar.instanceNames.isEmpty) {
       final dir = await getApplicationDocumentsDirectory();
       print(dir.path);
-      return await Isar.open([TournamentSchema, FixturesSchema, PlayerSchema],
+      return await Isar.open([TournamentSchema, FixtureSchema, PlayerSchema],
           directory: dir.path,
           inspector: true,
           name: AppStrings.bDbInstanceName);

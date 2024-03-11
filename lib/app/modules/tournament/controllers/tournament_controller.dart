@@ -64,7 +64,7 @@ class TournamentController extends GetxController {
 
       final player = Player()
         ..gamerTag = gamerTag
-        ..tournaments.value = tournamentState.tournament
+        ..tournament.value = tournamentState.tournament
         ..avatar = playerAvatar;
 
       players.add(player);
@@ -97,7 +97,7 @@ class TournamentController extends GetxController {
 
   setUpTournament() async {
     try {
-      List<Fixtures> fixtures = [];
+      List<Fixture> fixtures = [];
       Tournament savedTournament =
           await _tournamentRepo.createRecord(tournamentState.tournament) ??
               tournamentState.tournament;

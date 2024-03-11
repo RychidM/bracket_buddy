@@ -80,12 +80,7 @@ int _tournamentEstimateSize(
               value, allOffsets[LeagueTournament]!, allOffsets);
     }
   }
-  {
-    final value = object.tournamentName;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
+  bytesCount += 3 + object.tournamentName.length * 3;
   {
     final value = object.tournamentType;
     if (value != null) {
@@ -135,7 +130,7 @@ Tournament _tournamentDeserialize(
     allOffsets,
   );
   object.tournamentId = id;
-  object.tournamentName = reader.readStringOrNull(offsets[2]);
+  object.tournamentName = reader.readString(offsets[2]);
   object.tournamentType = _TournamenttournamentTypeValueEnumMap[
       reader.readStringOrNull(offsets[3])];
   return object;
@@ -161,7 +156,7 @@ P _tournamentDeserializeProp<P>(
         allOffsets,
       )) as P;
     case 2:
-      return (reader.readStringOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 3:
       return (_TournamenttournamentTypeValueEnumMap[
           reader.readStringOrNull(offset)]) as P;
@@ -368,26 +363,8 @@ extension TournamentQueryFilter
   }
 
   QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
-      tournamentNameIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'tournamentName',
-      ));
-    });
-  }
-
-  QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
-      tournamentNameIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'tournamentName',
-      ));
-    });
-  }
-
-  QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
       tournamentNameEqualTo(
-    String? value, {
+    String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -401,7 +378,7 @@ extension TournamentQueryFilter
 
   QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
       tournamentNameGreaterThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -417,7 +394,7 @@ extension TournamentQueryFilter
 
   QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
       tournamentNameLessThan(
-    String? value, {
+    String value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -433,8 +410,8 @@ extension TournamentQueryFilter
 
   QueryBuilder<Tournament, Tournament, QAfterFilterCondition>
       tournamentNameBetween(
-    String? lower,
-    String? upper, {
+    String lower,
+    String upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,
@@ -807,7 +784,7 @@ extension TournamentQueryProperty
     });
   }
 
-  QueryBuilder<Tournament, String?, QQueryOperations> tournamentNameProperty() {
+  QueryBuilder<Tournament, String, QQueryOperations> tournamentNameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'tournamentName');
     });

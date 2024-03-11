@@ -18,37 +18,38 @@ class FixturesController extends GetxController {
 
   @override
   void onInit() {
-    List<Fixtures> incomingFixtures = Get.arguments as List<Fixtures>;
+    List<Fixture> incomingFixtures = Get.arguments as List<Fixture>;
     fixturesState.fixtures = incomingFixtures;
     tournamentName = incomingFixtures.first.tournament.value?.tournamentName ??
         tournamentName;
     super.onInit();
   }
 
-  void updateStateFixture(Fixtures fixture) {
+  void updateStateFixture(Fixture fixture) {
     fixturesState.selectedFixture = fixture;
   }
 
   void generateNextFixtures() async {
     try {
       Tournament? tournament = await TournamentRepository().getRecordById(
-              fixturesState.fixtures.first.tournament.value!.tournamentId);
+          fixturesState.fixtures.first.tournament.value!.tournamentId);
 
-      if(tournament != null){
-        List<Fixtures> nextFixtures = await _fixturesRepo.getRoundFixtures(
+      if (tournament != null) {
+        List<Fixture> nextFixtures = await _fixturesRepo.getRoundFixtures(
             tournament.tournamentId,
-            tournament.knockoutTournament!.currentRound);
+            tournament.knockoutTournament!.currentRound + 1);
 
         if (nextFixtures.isEmpty) {
           List<Player> winners =
-          await _playerRepo.getPlayersByWinStatus(tournament.tournamentId);
+              await _playerRepo.getCurrentRoundPlayersByWinStatus(
+                  tournament.tournamentId,
+                  tournament.knockoutTournament!.currentRound);
 
           nextFixtures = tournament.knockoutTournament
-              ?.generateNextSetOfMatches(winners, tournament) ??
+                  ?.generateNextSetOfMatches(winners, tournament) ??
               [];
 
           nextFixtures = await _fixturesRepo.createMultiRecords(nextFixtures);
-
         }
 
         for (var fixture in nextFixtures) {
@@ -62,7 +63,6 @@ class FixturesController extends GetxController {
         fixturesState.nextFixtures = nextFixtures;
         Get.toNamed(Routes.FIXTURE_INFO, arguments: nextFixtures);
       }
-
     } on Exception catch (e) {
       Get.snackbar("Error", "Error generating fixtures");
       print(e);
@@ -96,7 +96,7 @@ class FixturesController extends GetxController {
     return true;
   }
 
-  void getPlayerFixtures(Fixtures fixture) async {
+  void getPlayerFixtures(Fixture fixture) async {
     int playerOneId = fixture.playerOne.value!.playerId;
     int playerTwoId = fixture.playerTwo.value!.playerId;
     fixturesState.p1Fixtures =
@@ -109,9 +109,8 @@ class FixturesController extends GetxController {
   }
 
   /// update player elimination status in selected fixture and update the fixture list.
-  void updatePlayerEliminationStatusInKO(
-      Player player, Fixtures fixture) async {
-    List<Fixtures> stateFixtures = fixturesState.fixtures;
+  void updatePlayerEliminationStatusInKO(Player player, Fixture fixture) async {
+    List<Fixture> stateFixtures = fixturesState.fixtures;
     int indexOf = stateFixtures.indexOf(fixture);
 
     // check if the fixture is in the list, if yes, update the fixture and the list.
@@ -119,14 +118,18 @@ class FixturesController extends GetxController {
     if (indexOf >= 0) {
       //
       if (fixture.playerOne.value?.playerId == player.playerId) {
-        fixture.playerTwo.value?.winStatus =
-            !fixture.playerTwo.value!.winStatus;
-        fixture.playerOne.value?.winStatus = false;
-      } else if (fixture.playerTwo.value?.playerId == player.playerId) {
         fixture.playerOne.value?.winStatus =
             !fixture.playerOne.value!.winStatus;
         fixture.playerTwo.value?.winStatus = false;
+      } else if (fixture.playerTwo.value?.playerId == player.playerId) {
+        fixture.playerTwo.value?.winStatus =
+            !fixture.playerTwo.value!.winStatus;
+        fixture.playerOne.value?.winStatus = false;
       }
+
+      final updatedFixture = fixture.copyWith()..fixtureWinner.value = player;
+
+      await _fixturesRepo.updateRecord(updatedFixture);
 
       await _playerRepo.updateMultiRecords(
           [fixture.playerOne.value!, fixture.playerTwo.value!]);
@@ -135,7 +138,7 @@ class FixturesController extends GetxController {
   }
 
   /// update player score in selected fixture and update fixture list.
-  void updatePlayerScoreInLeague(Player player, Fixtures fixture) async {
+  void updatePlayerScoreInLeague(Player player, Fixture fixture) async {
     if (fixture.playerOne.value?.playerId == player.playerId) {
       fixture.playerOneScore = (fixture.playerOneScore ?? 0) + 3;
       fixture.playerTwoScore = (fixture.playerTwoScore ?? 0) + 0;

@@ -5,9 +5,9 @@ import '../../../db_services/collections/fixtures_db_model.dart';
 class FixtureInfoController extends GetxController {
   @override
   void onInit() {
-    inComingFixtures = Get.arguments as List<Fixtures>;
+    inComingFixtures = Get.arguments as List<Fixture>;
     super.onInit();
   }
 
-  late List<Fixtures> inComingFixtures;
+  late List<Fixture> inComingFixtures;
 }

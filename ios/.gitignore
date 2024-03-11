@@ -13,6 +13,7 @@ Icon?
 **/Pods/
 **/.symlinks/
 profile
+GoogleService-Info.plist
 xcuserdata
 **/.generated/
 Flutter/App.framework
@@ -27,6 +28,7 @@ Flutter/flutter_export_environment.sh
 ServiceDefinitions.json
 Runner/GeneratedPluginRegistrant.*
 Podfile.lock
+firebase_app_id_file.json
 
 # Exceptions to above rules.
 !default.mode1v3

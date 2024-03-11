@@ -57,7 +57,7 @@ class FixtureInfoView extends GetView<FixtureInfoController> {
               itemBuilder: (context, index) {
               Color avatarBgColor = BuddyUtils.getAccentColor(index);
               Color avatarBgColor2 = BuddyUtils.getAccentColor(index + 1);
-              Fixtures fixture = controller.inComingFixtures[index];
+              Fixture fixture = controller.inComingFixtures[index];
               return FixturesWidget(
                 avatarBgColor: avatarBgColor,
                 fixture: fixture,

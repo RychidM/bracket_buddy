@@ -53,9 +53,9 @@ class TournamentState {
   List<Player> get players => _players;
   set players(List<Player> players) => _players.value = players;
 
-  final RxList<Fixtures> _matches = <Fixtures>[].obs;
-  List<Fixtures> get fixtures => List<Fixtures>.from(_matches);
-  set fixtures(List<Fixtures> matches) => _matches.value = matches;
+  final RxList<Fixture> _matches = <Fixture>[].obs;
+  List<Fixture> get fixtures => List<Fixture>.from(_matches);
+  set fixtures(List<Fixture> matches) => _matches.value = matches;
 }
 
 enum CreateTournamentStep { stepOne, stepTwo, stepThree }
