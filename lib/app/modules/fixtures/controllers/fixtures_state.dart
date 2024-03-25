@@ -32,4 +32,12 @@ class FixtureState {
   final RxList<Fixture> _nextFixtures = <Fixture>[].obs;
   List<Fixture> get nextFixtures => _nextFixtures;
   set nextFixtures(List<Fixture> fixtures) => _nextFixtures.value = fixtures;
+
+  final RxInt _currentStage = 1.obs;
+  int get currentStage => _currentStage.value;
+  set currentStage(int stage) => _currentStage.value = stage;
+
+  final RxMap<int, List<Fixture>> _allFixtures = <int, List<Fixture>>{}.obs;
+  Map<int, List<Fixture>> get allFixtures => _allFixtures;
+  set allFixtures(Map<int, List<Fixture>> fixtures) => _allFixtures.value = fixtures;
 }

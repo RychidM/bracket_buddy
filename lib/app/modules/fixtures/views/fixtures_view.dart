@@ -3,6 +3,7 @@ import 'package:bracket_buddy/app/data/constants/app_strings.dart';
 import 'package:bracket_buddy/app/data/theme/app_theme.dart';
 import 'package:bracket_buddy/app/data/utils.dart';
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
+import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/create_tournament_header.dart';
@@ -16,11 +17,13 @@ import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
 
+import '../../../widgets/dynamic_round_tab.dart';
 import '../../../widgets/text_widgets/heading_text.dart';
 import '../controllers/fixtures_controller.dart';
 
 class FixturesView extends GetView<FixturesController> {
   const FixturesView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,9 +65,15 @@ class FixturesView extends GetView<FixturesController> {
                       BuddyHeadyWidget(
                         headerTitle: "${controller.tournamentName} Tournament",
                       ),
-                      BuddyBodyText(
-                          text: controller
-                              .fixtureState.fixtures.first.fixtureRoundName),
+                      Gap(8.h),
+                      DynamicFixtureRoundTap(
+                        fixtures: controller.fixtureState.fixtures,
+                        tabSelected:
+                            controller.fixtureState.fixtures.first.matchRound ==
+                                controller.fixtureState.currentStage,
+                        onTapSelected: (tabIndex) =>
+                            controller.updateCurrentStage(tabIndex),
+                      )
                     ],
                   ),
                 ),

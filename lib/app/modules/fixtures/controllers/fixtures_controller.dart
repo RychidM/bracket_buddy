@@ -8,7 +8,6 @@ import 'package:bracket_buddy/app/modules/fixtures/controllers/fixtures_state.da
 import 'package:bracket_buddy/app/modules/fixtures/views/fixture_details_view.dart';
 import 'package:bracket_buddy/app/repository/fixtures_repo.dart';
 import 'package:bracket_buddy/app/repository/tournament_repo.dart';
-import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 
 import '../../../repository/player_repo.dart';
@@ -17,12 +16,18 @@ class FixturesController extends GetxController {
   FixtureState fixtureState = FixtureState();
   final _fixturesRepo = FixturesRepository();
   final _playerRepo = PlayerRepository();
+  Map<int, List<Fixture>> stateAllFixtures = {};
   String tournamentName = "";
 
   @override
   void onInit() {
     List<Fixture> incomingFixtures = Get.arguments as List<Fixture>;
     fixtureState.fixtures = incomingFixtures;
+    stateAllFixtures.putIfAbsent(
+        incomingFixtures.first.matchRound ?? 1, ()=> incomingFixtures);
+    fixtureState.allFixtures = stateAllFixtures;
+    print(stateAllFixtures.entries.length);
+
     tournamentName = incomingFixtures.first.tournament.value?.tournamentName ??
         tournamentName;
     super.onInit();
@@ -40,7 +45,7 @@ class FixturesController extends GetxController {
       if (tournament != null) {
         List<Fixture> nextFixtures = await _fixturesRepo.getRoundFixtures(
             tournament.tournamentId,
-            fixtureState.fixtures.first.matchRound !+ 1);
+            fixtureState.fixtures.first.matchRound! + 1);
 
         if (nextFixtures.isEmpty) {
           List<Player> winners =
@@ -53,7 +58,6 @@ class FixturesController extends GetxController {
               [];
 
           nextFixtures = await _fixturesRepo.createMultiRecords(nextFixtures);
-
 
           final updatedTournament = tournament.copyWith()
             ..knockoutTournament!.currentRound =
@@ -71,18 +75,20 @@ class FixturesController extends GetxController {
             fixture.playerTwo.value!.winStatus = false;
           }
         }
-
-        Get.toNamed(Routes.FIXTURE_INFO, arguments: nextFixtures);
+        stateAllFixtures[nextFixtures.first.matchRound ?? 0] = nextFixtures;
+        fixtureState.allFixtures = stateAllFixtures;
+        fixtureState.currentStage = nextFixtures.first.matchRound ?? fixtureState.currentStage;
+        updateCurrentStage(nextFixtures.first.matchRound);
       }
     } on Exception {
       Get.snackbar("Error", "Error generating fixtures");
     }
   }
 
-  static String getCurrentRoundName(List<Player> players) {
+  static String getCurrentRoundName(int playersLength) {
     // int playersLeft = players.length ~/ pow(2, currentRound);
 
-    switch (players.length) {
+    switch (playersLength) {
       case 16:
         return "Round of 16";
       case 8:
@@ -92,7 +98,7 @@ class FixturesController extends GetxController {
       case 2:
         return "Final";
       default:
-        return "Round ${players.length}";
+        return "Round $playersLength";
     }
   }
 
@@ -159,5 +165,11 @@ class FixturesController extends GetxController {
 
     await _fixturesRepo.updateRecord(fixture);
     fixtureState.selectedFixture = fixture;
+  }
+
+  void updateCurrentStage(currentStage) {
+    fixtureState.currentStage = currentStage;
+    fixtureState.fixtures =
+        fixtureState.allFixtures[currentStage] ?? [];
   }
 }
