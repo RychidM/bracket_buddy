@@ -1,3 +1,6 @@
+import 'dart:ffi';
+import 'dart:math';
+
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
@@ -11,7 +14,7 @@ import 'package:get/get.dart';
 import '../../../repository/player_repo.dart';
 
 class FixturesController extends GetxController {
-  FixturesState fixturesState = FixturesState();
+  FixtureState fixtureState = FixtureState();
   final _fixturesRepo = FixturesRepository();
   final _playerRepo = PlayerRepository();
   String tournamentName = "";
@@ -19,25 +22,25 @@ class FixturesController extends GetxController {
   @override
   void onInit() {
     List<Fixture> incomingFixtures = Get.arguments as List<Fixture>;
-    fixturesState.fixtures = incomingFixtures;
+    fixtureState.fixtures = incomingFixtures;
     tournamentName = incomingFixtures.first.tournament.value?.tournamentName ??
         tournamentName;
     super.onInit();
   }
 
   void updateStateFixture(Fixture fixture) {
-    fixturesState.selectedFixture = fixture;
+    fixtureState.selectedFixture = fixture;
   }
 
   void generateNextFixtures() async {
     try {
       Tournament? tournament = await TournamentRepository().getRecordById(
-          fixturesState.fixtures.first.tournament.value!.tournamentId);
+          fixtureState.fixtures.first.tournament.value!.tournamentId);
 
       if (tournament != null) {
         List<Fixture> nextFixtures = await _fixturesRepo.getRoundFixtures(
             tournament.tournamentId,
-            tournament.knockoutTournament!.currentRound + 1);
+            fixtureState.fixtures.first.matchRound !+ 1);
 
         if (nextFixtures.isEmpty) {
           List<Player> winners =
@@ -50,6 +53,14 @@ class FixturesController extends GetxController {
               [];
 
           nextFixtures = await _fixturesRepo.createMultiRecords(nextFixtures);
+
+
+          final updatedTournament = tournament.copyWith()
+            ..knockoutTournament!.currentRound =
+                tournament.knockoutTournament!.currentRound + 1;
+          fixtureState.nextFixtures = nextFixtures;
+
+          await TournamentRepository().updateRecord(updatedTournament);
         }
 
         for (var fixture in nextFixtures) {
@@ -60,16 +71,15 @@ class FixturesController extends GetxController {
             fixture.playerTwo.value!.winStatus = false;
           }
         }
-        fixturesState.nextFixtures = nextFixtures;
+
         Get.toNamed(Routes.FIXTURE_INFO, arguments: nextFixtures);
       }
-    } on Exception catch (e) {
+    } on Exception {
       Get.snackbar("Error", "Error generating fixtures");
-      print(e);
     }
   }
 
-  static String getCurrentRoundName(List<Player> players, int currentRound) {
+  static String getCurrentRoundName(List<Player> players) {
     // int playersLeft = players.length ~/ pow(2, currentRound);
 
     switch (players.length) {
@@ -82,12 +92,12 @@ class FixturesController extends GetxController {
       case 2:
         return "Final";
       default:
-        return "Round $currentRound";
+        return "Round ${players.length}";
     }
   }
 
   bool fixturesHasWinner() {
-    for (var fixture in fixturesState.fixtures) {
+    for (var fixture in fixtureState.fixtures) {
       if (fixture.playerOne.value?.winStatus != true &&
           fixture.playerTwo.value?.winStatus != true) {
         return false;
@@ -99,18 +109,18 @@ class FixturesController extends GetxController {
   void getPlayerFixtures(Fixture fixture) async {
     int playerOneId = fixture.playerOne.value!.playerId;
     int playerTwoId = fixture.playerTwo.value!.playerId;
-    fixturesState.p1Fixtures =
+    fixtureState.p1Fixtures =
         await _fixturesRepo.getFixturesByPlayer(playerOneId);
-    fixturesState.p2Fixtures =
+    fixtureState.p2Fixtures =
         await _fixturesRepo.getFixturesByPlayer(playerTwoId);
-    fixturesState.showFixtureDetails = !fixturesState.showFixtureDetails;
-    fixturesState.selectedFixture = fixture;
+    fixtureState.showFixtureDetails = !fixtureState.showFixtureDetails;
+    fixtureState.selectedFixture = fixture;
     Get.to(() => const FixtureDetailsPage());
   }
 
   /// update player elimination status in selected fixture and update the fixture list.
   void updatePlayerEliminationStatusInKO(Player player, Fixture fixture) async {
-    List<Fixture> stateFixtures = fixturesState.fixtures;
+    List<Fixture> stateFixtures = fixtureState.fixtures;
     int indexOf = stateFixtures.indexOf(fixture);
 
     // check if the fixture is in the list, if yes, update the fixture and the list.
@@ -148,6 +158,6 @@ class FixturesController extends GetxController {
     }
 
     await _fixturesRepo.updateRecord(fixture);
-    fixturesState.selectedFixture = fixture;
+    fixtureState.selectedFixture = fixture;
   }
 }

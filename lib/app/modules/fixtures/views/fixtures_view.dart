@@ -64,7 +64,7 @@ class FixturesView extends GetView<FixturesController> {
                       ),
                       BuddyBodyText(
                           text: controller
-                              .fixturesState.fixtures.first.fixtureRoundName),
+                              .fixtureState.fixtures.first.fixtureRoundName),
                     ],
                   ),
                 ),
@@ -75,11 +75,11 @@ class FixturesView extends GetView<FixturesController> {
               child: Obx(
                 () => ListView.builder(
                   padding: EdgeInsets.zero,
-                  itemCount: controller.fixturesState.fixtures.length,
+                  itemCount: controller.fixtureState.fixtures.length,
                   itemBuilder: (context, index) {
                     Color avatarBgColor = BuddyUtils.getAccentColor(index);
                     Color avatarBgColor2 = BuddyUtils.getAccentColor(index + 1);
-                    Fixture fixture = controller.fixturesState.fixtures[index];
+                    Fixture fixture = controller.fixtureState.fixtures[index];
                     return FixturesWidget(
                       avatarBgColor: avatarBgColor,
                       fixture: fixture,

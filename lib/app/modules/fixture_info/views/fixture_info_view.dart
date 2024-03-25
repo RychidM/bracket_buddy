@@ -19,6 +19,8 @@ class FixtureInfoView extends GetView<FixtureInfoController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BuddyScreenTemplate(
+        isHintVisible: true,
+          hintMessage: "fuck off",
           mainChild: Column(
         children: [
           Stack(

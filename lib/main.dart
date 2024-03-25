@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:bracket_buddy/app/data/theme/app_theme.dart';
@@ -27,7 +25,7 @@ void main() async {
        FlutterError.onError = (errorDetails) {
          FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
        };
-       PlatformDispatcher.instance.onError =(error, stack) {
+       PlatformDispatcher.instance.onError = (error, stack) {
          FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
          return true;
        };

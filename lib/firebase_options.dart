@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static FirebaseOptions android = FirebaseOptions(
     apiKey: dotenv.get("FIREBASE_ANDROID_APP_API_KEY"),
-    appId: dotenv.get("FIREBASE_ANDROID_APP_APP_ID"),
+    appId: dotenv.get("FIREBASE_ANDROID_APP_ID"),
     messagingSenderId: dotenv.get("FIREBASE_ANDROID_MESSAGE_SENDING_ID"),
     projectId: dotenv.get("FIREBASE_PROJECT_ID"),
     storageBucket: dotenv.get("FIREBASE_STORAGE_BUCKET"),

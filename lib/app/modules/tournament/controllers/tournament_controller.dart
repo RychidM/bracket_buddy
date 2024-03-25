@@ -87,7 +87,7 @@ class TournamentController extends GetxController {
       ..tournamentType = tournamentState.tournamentType;
 
     if (tournamentState.tournamentType == TournamentType.knockout) {
-      tournament.knockoutTournament = KnockoutTournament()..currentRound = 0;
+      tournament.knockoutTournament = KnockoutTournament()..currentRound = 1;
     } else {
       tournament.leagueTournament = LeagueTournament();
     }
@@ -110,17 +110,21 @@ class TournamentController extends GetxController {
         fixtures = tournamentState.tournament.knockoutTournament
                 ?.generateKnockOutMatches(savedPlayers, savedTournament) ??
             [];
-
       } else {
         fixtures = tournamentState.tournament.leagueTournament
                 ?.generateLeagueFixtures(savedPlayers, savedTournament) ??
             [];
       }
       var newFixtures = await _fixturesRepo.createMultiRecords(fixtures);
+
+      // final updatedTournament = savedTournament.copyWith()
+      //   ..knockoutTournament!.currentRound =
+      //       savedTournament.knockoutTournament!.currentRound +1;
+      //
+      // await _tournamentRepo.updateRecord(updatedTournament);
       tournamentState.fixtures = newFixtures;
       Get.offNamed(Routes.FIXTURES, arguments: tournamentState.fixtures);
-    } on Exception catch (e) {
-      print(e);
+    } on Exception{
       Get.snackbar("Error", "Error creating fixtures");
     }
   }

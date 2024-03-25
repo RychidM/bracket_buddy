@@ -58,3 +58,14 @@ class Fixture {
       ..playerTwo.value = playerTwo ?? this.playerTwo.value;
   }
 }
+
+@collection
+class Winners {
+  Id winnerId = Isar.autoIncrement;
+
+  final winner = IsarLink<Player>();
+
+  final fixture = IsarLink<Fixture>();
+
+  int round = 0;
+}

@@ -61,7 +61,6 @@ class TournamentRepository extends DbServiceAdaptor<Tournament> {
       final tournament = await isar.tournaments.get(record.tournamentId);
       if (tournament != null) {
         await isar.tournaments.put(record);
-        print(await isar.tournaments.get(record.tournamentId).then((value) => value!.knockoutTournament!.currentRound));
       }
     });
   }

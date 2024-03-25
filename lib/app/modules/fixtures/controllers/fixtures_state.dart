@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../../../db_services/collections/fixtures_db_model.dart';
 import '../../../db_services/collections/player_db_model.dart';
 
-class FixturesState {
+class FixtureState {
   /// Holds the current value of fixtures
   final RxList<Fixture> _fixtures = <Fixture>[].obs;
   List<Fixture> get fixtures => _fixtures;

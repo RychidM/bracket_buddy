@@ -120,7 +120,6 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
             (q) => q.knockoutTournament((q) => q.currentRoundEqualTo(round)))
         .findAll();
 
-    print(res.map((e) => e.gamerTag).toList());
     return res;
   }
 

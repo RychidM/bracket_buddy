@@ -55,31 +55,31 @@ class FixtureDetailsPage extends StatelessWidget {
                   return FixturesWidget(
                       p1OnTap: () => controller
                           .updatePlayerEliminationStatusInKO(
-                              controller.fixturesState.selectedFixture.playerOne
+                              controller.fixtureState.selectedFixture.playerOne
                                   .value!,
-                              controller.fixturesState.selectedFixture),
+                              controller.fixtureState.selectedFixture),
                       p2OnTap: () =>
                           controller.updatePlayerEliminationStatusInKO(
-                              controller.fixturesState.selectedFixture.playerTwo
+                              controller.fixtureState.selectedFixture.playerTwo
                                   .value!,
-                              controller.fixturesState.selectedFixture),
+                              controller.fixtureState.selectedFixture),
                       avatarBgColor: BuddyUtils.getAccentColor(2),
-                      fixture: controller.fixturesState.selectedFixture,
+                      fixture: controller.fixtureState.selectedFixture,
                       avatarBgColor2: BuddyUtils.getAccentColor(1));
                 },
               ),
               Gap(10.h),
               BuddyBodyText(
                   text:
-                      "${controller.fixturesState.selectedFixture.playerOne.value?.gamerTag} Fixtures"),
+                      "${controller.fixtureState.selectedFixture.playerOne.value?.gamerTag} Fixtures"),
               Gap(10.h),
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 padding: EdgeInsets.zero,
-                itemCount: controller.fixturesState.p1Fixtures.length,
+                itemCount: controller.fixtureState.p1Fixtures.length,
                 itemBuilder: (context, index) {
-                  var fixture = controller.fixturesState.p1Fixtures[index]
+                  var fixture = controller.fixtureState.p1Fixtures[index]
                       .reverseFixture();
                   Color avatarBgColor = BuddyUtils.getAccentColor(index);
                   Color avatarBgColor2 = BuddyUtils.getAccentColor(index + 1);
@@ -91,19 +91,19 @@ class FixtureDetailsPage extends StatelessWidget {
               ),
               Gap(10.h),
               Visibility(
-                visible: controller.fixturesState.p2Fixtures.isNotEmpty,
+                visible: controller.fixtureState.p2Fixtures.isNotEmpty,
                 child: BuddyBodyText(
                     text:
-                        "${controller.fixturesState.selectedFixture.playerTwo.value?.gamerTag} Fixtures"),
+                        "${controller.fixtureState.selectedFixture.playerTwo.value?.gamerTag} Fixtures"),
               ),
               Gap(10.h),
               ListView.builder(
                 shrinkWrap: true,
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: controller.fixturesState.p2Fixtures.length,
+                itemCount: controller.fixtureState.p2Fixtures.length,
                 itemBuilder: (context, index) {
-                  var fixture = controller.fixturesState.p2Fixtures[index];
+                  var fixture = controller.fixtureState.p2Fixtures[index];
                   Color avatarBgColor = BuddyUtils.getAccentColor(index);
                   Color avatarBgColor2 = BuddyUtils.getAccentColor(index + 1);
                   return FixturesWidget(

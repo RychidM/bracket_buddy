@@ -23,11 +23,11 @@ class KnockoutTournament {
         ..playerOne.value = players[i]
         ..playerTwo.value = players[numberOfPlayers - i - 1]
         ..tournament.value = tournament
-        ..fixtureRoundName = FixturesController.getCurrentRoundName(players, 1)
+        ..fixtureRoundName = FixturesController.getCurrentRoundName(players)
         ..matchRound = 1;
       fixtures.add(fixture);
     }
-    tournament.knockoutTournament?.currentRound++;
+    // tournament.knockoutTournament?.currentRound++;
     return fixtures;
   }
 
@@ -47,11 +47,11 @@ class KnockoutTournament {
         ..playerTwo.value = playerTwo
         ..tournament.value = tournament
         ..fixtureRoundName = FixturesController.getCurrentRoundName(
-            winners, tournament.knockoutTournament!.currentRound + 1)
+            winners)
         ..matchRound = (tournament.knockoutTournament!.currentRound +1));
     }
 
-    tournament.knockoutTournament?.currentRound++;
+    // tournament.knockoutTournament?.currentRound++;
     return nextRoundMatches;
   }
 
