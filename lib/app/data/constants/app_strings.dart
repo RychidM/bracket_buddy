@@ -14,6 +14,7 @@ class AppStrings {
   static const String bNumberOfPlayers = "Number of Players";
   static const String bStartPlaying = "Start Playing";
   static const String bDbInstanceName = "bracketBuddy";
+  static const String bSeeWinner = "See Winner";
   static const String bSelectWinnerErrTitle = "Select Winners to Process";
   static const String bSelectWinnerErrMsg =
       "Please select a winner for all fixtures.\nTo select a winner, tap on a player avatar.";

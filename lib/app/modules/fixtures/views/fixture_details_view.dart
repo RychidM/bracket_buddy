@@ -51,7 +51,7 @@ class FixtureDetailsPage extends StatelessWidget {
               GetX<FixturesController>(
                 init: FixturesController(),
                 initState: (_) {},
-                builder: (f) {
+                builder: (_) {
                   return FixturesWidget(
                       p1OnTap: () => controller
                           .updatePlayerEliminationStatusInKO(

@@ -26,7 +26,7 @@ class FixturesController extends GetxController {
     stateAllFixtures.putIfAbsent(
         incomingFixtures.first.matchRound ?? 1, ()=> incomingFixtures);
     fixtureState.allFixtures = stateAllFixtures;
-    print(stateAllFixtures.entries.length);
+    fixtureState.currentStage = incomingFixtures.first.matchRound ?? 0;
 
     tournamentName = incomingFixtures.first.tournament.value?.tournamentName ??
         tournamentName;
@@ -77,6 +77,7 @@ class FixturesController extends GetxController {
         }
         stateAllFixtures[nextFixtures.first.matchRound ?? 0] = nextFixtures;
         fixtureState.allFixtures = stateAllFixtures;
+        fixtureState.currentStage = nextFixtures.first.matchRound ?? 0;
         fixtureState.currentStage = nextFixtures.first.matchRound ?? fixtureState.currentStage;
         updateCurrentStage(nextFixtures.first.matchRound);
       }
