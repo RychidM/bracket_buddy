@@ -3,7 +3,6 @@ import 'package:bracket_buddy/app/data/constants/app_strings.dart';
 import 'package:bracket_buddy/app/data/theme/app_theme.dart';
 import 'package:bracket_buddy/app/data/utils.dart';
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
-import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/create_tournament_header.dart';
@@ -29,18 +28,18 @@ class FixturesView extends GetView<FixturesController> {
     return Scaffold(
       body: BuddyScreenTemplate(
         isHintVisible: true,
-        bottomWidget: BuddyButton(
-          onTap: controller.fixtureState.fixtures.length > 1 ? () =>
-          controller.fixturesHasWinner()
-              ? controller.generateNextFixtures()
-              : Get.snackbar(AppStrings.bSelectWinnerErrTitle,
-              AppStrings.bSelectWinnerErrMsg,
-              backgroundColor:
-              AppColors.primaryGreenLight.withOpacity(.25)) : () => null,
-          btnColor: AppColors.whiteColor,
-          label: controller.fixtureState.fixtures.length > 1 ? AppStrings.bNextRound : AppStrings.bSeeWinner,
-          labelColor: AppColors.primaryTextColor,
-        ),
+        bottomWidget: Obx(() {
+          return BuddyButton(
+            onTap: () {
+              _handleNextRoundBtnOnTap();
+            },
+            btnColor: AppColors.whiteColor,
+            label: controller.fixtureState.fixtures.length > 1
+                ? AppStrings.bNextRound
+                : AppStrings.bSeeWinner,
+            labelColor: AppColors.primaryTextColor,
+          );
+        }),
         mainChild: Column(
           children: [
             Stack(
@@ -67,11 +66,11 @@ class FixturesView extends GetView<FixturesController> {
                         headerTitle: "${controller.tournamentName} Tournament",
                       ),
                       Gap(8.h),
-                        DynamicFixtureRoundTap(
-                          fixtures: controller.fixtureState.fixtures,
-                          onTapSelected: (tabIndex) =>
-                              controller.updateCurrentStage(tabIndex),
-                        )
+                      DynamicFixtureRoundTap(
+                        fixtures: controller.fixtureState.fixtures,
+                        onTapSelected: (tabIndex) =>
+                            controller.updateCurrentStage(tabIndex),
+                      )
                     ],
                   ),
                 ),
@@ -112,6 +111,19 @@ class FixturesView extends GetView<FixturesController> {
         ),
       ),
     );
+  }
+
+  void _handleNextRoundBtnOnTap() {
+    if (controller.fixturesHasWinner()) {
+      controller.fixtureState.fixtures.length > 1
+          ? controller.generateNextFixtures()
+          : Get.offNamed(Routes.WINNER,
+          arguments: controller.fixtureState.fixtures.first.playerOne);
+    } else {
+      Get.snackbar(
+          AppStrings.bSelectWinnerErrTitle, AppStrings.bSelectWinnerErrMsg,
+          backgroundColor: AppColors.primaryGreenLight.withOpacity(.25));
+    }
   }
 }
 

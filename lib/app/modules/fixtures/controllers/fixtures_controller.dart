@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:math';
-
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
@@ -21,15 +18,18 @@ class FixturesController extends GetxController {
 
   @override
   void onInit() {
-    List<Fixture> incomingFixtures = Get.arguments as List<Fixture>;
-    fixtureState.fixtures = incomingFixtures;
-    stateAllFixtures.putIfAbsent(
-        incomingFixtures.first.matchRound ?? 1, ()=> incomingFixtures);
+    Map<int, List<Fixture>> incomingFixtures =
+        Get.arguments as Map<int, List<Fixture>>;
+    fixtureState.fixtures = incomingFixtures[1] ?? [];
+    stateAllFixtures = incomingFixtures;
+    // stateAllFixtures.putIfAbsent(
+    //     incomingFixtures.first.matchRound ?? 1, ()=> incomingFixtures);
     fixtureState.allFixtures = stateAllFixtures;
-    fixtureState.currentStage = incomingFixtures.first.matchRound ?? 0;
+    fixtureState.currentStage = 1;
 
-    tournamentName = incomingFixtures.first.tournament.value?.tournamentName ??
-        tournamentName;
+    tournamentName =
+        incomingFixtures[1]?.first.tournament.value?.tournamentName ??
+            tournamentName;
     super.onInit();
   }
 
@@ -78,7 +78,8 @@ class FixturesController extends GetxController {
         stateAllFixtures[nextFixtures.first.matchRound ?? 0] = nextFixtures;
         fixtureState.allFixtures = stateAllFixtures;
         fixtureState.currentStage = nextFixtures.first.matchRound ?? 0;
-        fixtureState.currentStage = nextFixtures.first.matchRound ?? fixtureState.currentStage;
+        fixtureState.currentStage =
+            nextFixtures.first.matchRound ?? fixtureState.currentStage;
         updateCurrentStage(nextFixtures.first.matchRound);
       }
     } on Exception {
@@ -170,7 +171,6 @@ class FixturesController extends GetxController {
 
   void updateCurrentStage(currentStage) {
     fixtureState.currentStage = currentStage;
-    fixtureState.fixtures =
-        fixtureState.allFixtures[currentStage] ?? [];
+    fixtureState.fixtures = fixtureState.allFixtures[currentStage] ?? [];
   }
 }

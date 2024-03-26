@@ -123,8 +123,12 @@ class TournamentController extends GetxController {
       //
       // await _tournamentRepo.updateRecord(updatedTournament);
       tournamentState.fixtures = newFixtures;
-      Get.offNamed(Routes.FIXTURES, arguments: tournamentState.fixtures);
-    } on Exception{
+      Map<int, List<Fixture>> fixturesMap = {
+        newFixtures.first.matchRound ?? 1: newFixtures
+      };
+
+      Get.offNamed(Routes.FIXTURES, arguments: fixturesMap);
+    } on Exception {
       Get.snackbar("Error", "Error creating fixtures");
     }
   }

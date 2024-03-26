@@ -1,4 +1,3 @@
-
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
@@ -15,24 +14,23 @@ class FixturesRepository extends DbServiceAdaptor<Fixture> {
     try {
       isar = await _dbService.tournamentDb;
       List<int> ids = await isar.writeTxn(() async {
-            var returnedIds = await isar.fixtures.putAll(records);
-            for (var element in records) {
-              await isar.players.put(element.playerOne.value!);
-              await isar.players.put(element.playerTwo.value!);
-              await isar.tournaments.put(element.tournament.value!);
-              await element.playerOne.save();
-              await element.playerTwo.save();
-              await element.tournament.save();
-            }
-            return returnedIds;
-          });
+        var returnedIds = await isar.fixtures.putAll(records);
+        for (var element in records) {
+          await isar.players.put(element.playerOne.value!);
+          await isar.players.put(element.playerTwo.value!);
+          await isar.tournaments.put(element.tournament.value!);
+          await element.playerOne.save();
+          await element.playerTwo.save();
+          await element.tournament.save();
+        }
+        return returnedIds;
+      });
       var returnedFixtures = await isar.fixtures.getAll(ids);
       return returnedFixtures.whereType<Fixture>().toList();
     } on Exception catch (e) {
       print(e);
       rethrow;
     }
-
   }
 
   @override
@@ -95,6 +93,33 @@ class FixturesRepository extends DbServiceAdaptor<Fixture> {
         .filter()
         .tournament((q) => q.tournamentIdEqualTo(tournamentId))
         .findAll();
+  }
+
+  Future<Map<int, List<Fixture>>> getFixturesByTournament(
+      int tournamentId) async {
+    try {
+      Map<int, List<Fixture>> fixturesMap = {};
+      isar = await _dbService.tournamentDb;
+
+      List<Fixture> fixtures = await isar.fixtures
+          .where()
+          .filter()
+          .tournament((q) => q.tournamentIdEqualTo(tournamentId))
+          .findAll();
+
+      if (fixtures.isNotEmpty) {
+        for (Fixture fixture in fixtures) {
+          fixturesMap.putIfAbsent(
+              fixture.matchRound!,
+              () => fixtures
+                  .where((e) => fixture.matchRound == e.matchRound)
+                  .toList());
+        }
+      }
+      return fixturesMap;
+    } on Exception {
+      rethrow;
+    }
   }
 
   Future<void> deleteFixtureAssociatedWithTournament(int tournamentId) async {
