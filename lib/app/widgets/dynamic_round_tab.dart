@@ -55,7 +55,7 @@ class DynamicFixtureRoundTap extends GetView<FixturesController> {
             },
             child: Obx(() {
               return Container(
-                padding: AppTheme.bPadding5,
+                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 10.w),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.r),
                     color: controller.fixtureState.currentStage == tabIndex + 1
@@ -63,7 +63,7 @@ class DynamicFixtureRoundTap extends GetView<FixturesController> {
                         : Colors.transparent
                 ),
                 child: BuddyBodyText(
-                  text: _getCurrentRoundName(tabIndex+1),
+                  text: controller.fixtureState.allFixtures[tabIndex+1]?.first.fixtureRoundName ?? '',
                   fontSize: 11,
                   textColor: controller.fixtureState.currentStage ==
                       tabIndex + 1 ? AppColors.primaryTextColor : AppColors
@@ -75,20 +75,5 @@ class DynamicFixtureRoundTap extends GetView<FixturesController> {
         },
       ),
     );
-  }
-
-  _getCurrentRoundName(int tabIndex) {
-    switch(tabIndex){
-      case 1:
-        return "Round of 16";
-      case 2:
-        return "Quarter Finals";
-      case 3:
-        return "Semi Finals";
-      case 4:
-        return "Final";
-      default:
-        return "Round $tabIndex";
-    }
   }
 }

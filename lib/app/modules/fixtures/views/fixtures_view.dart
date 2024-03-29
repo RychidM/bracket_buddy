@@ -118,7 +118,7 @@ class FixturesView extends GetView<FixturesController> {
       controller.fixtureState.fixtures.length > 1
           ? controller.generateNextFixtures()
           : Get.offNamed(Routes.WINNER,
-          arguments: controller.fixtureState.fixtures.first.playerOne);
+          arguments: controller.fixtureState.fixtures.first.fixtureWinner.value);
     } else {
       Get.snackbar(
           AppStrings.bSelectWinnerErrTitle, AppStrings.bSelectWinnerErrMsg,
@@ -166,7 +166,7 @@ class FixturesWidget extends StatelessWidget {
               gamerTag: fixture.playerOne.value?.gamerTag ?? "",
               imgString: fixture.playerOne.value?.avatar ?? "",
               p1OnTap: p1OnTap,
-              isWinner: fixture.playerOne.value?.winStatus == true,
+              isWinner: fixture.playerOne.value?.playerId == fixture.fixtureWinner.value?.playerId,
             ),
             const BuddyBodyText(
               text: "VS",
@@ -178,7 +178,7 @@ class FixturesWidget extends StatelessWidget {
               avatarBgColor: avatarBgColor2,
               gamerTag: fixture.playerTwo.value?.gamerTag ?? "",
               imgString: fixture.playerTwo.value?.avatar ?? "",
-              isWinner: fixture.playerTwo.value?.winStatus == true,
+              isWinner: fixture.playerTwo.value?.playerId == fixture.fixtureWinner.value?.playerId,
             ),
           ],
         ),

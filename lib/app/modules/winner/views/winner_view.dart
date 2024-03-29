@@ -1,8 +1,16 @@
+import 'package:bracket_buddy/app/routes/app_pages.dart';
+import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/screen_template.dart';
+import 'package:bracket_buddy/generated/assets.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../data/constants/app_colors.dart';
 import '../../../widgets/create_tournament_header.dart';
@@ -18,45 +26,101 @@ class WinnerView extends GetView<WinnerController> {
     return Scaffold(
       body: BuddyScreenTemplate(
           isHintVisible: true,
-          hintMessage: "fuck off",
+          hintMessage:
+              "Deleting tournaments upon completion helps save storage.",
           mainChild: Column(
             children: [
               Stack(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      Get.back();
-                    },
-                    child: const BuddyHeadingText(
-                      text: "<",
-                      fontSize: 58,
-                      textColor: AppColors.primaryGreenLight,
-                    ),
-                  ),
-                  const Align(
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     HapticFeedback.lightImpact();
+                  //     Get.back();
+                  //   },
+                  //   child: const BuddyHeadingText(
+                  //     text: "<",
+                  //     fontSize: 58,
+                  //     textColor: AppColors.primaryGreenLight,
+                  //   ),
+                  // ),
+                  Align(
                     alignment: Alignment.topCenter,
                     child: Column(
                       children: [
                         BuddyHeadyWidget(
-                          headerTitle: "Tournament",
+                          headerTitle:
+                              "Winner of ${controller.winner.tournament.value?.tournamentName} Tournament",
                         ),
-                        BuddyBodyText(
-                            text:
-                                "controller.inComingFixtures.first.fixtureRoundName"),
+                        Gap(10.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            BuddyBodyText(text: controller.winner.gamerTag),
+                            Gap(10.w),
+                            SizedBox(
+                                height: 25.h,
+                                child: Image.asset(controller.winner.avatar)),
+                          ],
+                        ),
+                        Gap(40.h),
+                        Stack(
+                          children: [
+                            Positioned(
+                                top: -50.h,
+                                left: 0,
+                                right: 0,
+                                child: Lottie.asset(
+                                    Assets.animationFireworksAnimation)),
+                            Positioned(
+                                child: Lottie.asset(
+                                    Assets.animationWinnerAnimation)),
+                          ],
+                        ),
                       ],
                     ),
                   ),
                 ],
               ),
-              Expanded(
-                child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      return Container();
-                    }),
-              )
+              Gap(20.h),
+              BuddyButton(
+                  label: "Finish Tournament",
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    Get.offNamedUntil(Routes.HOME,
+                        (route) => route.settings.name == Routes.HOME);
+                  }),
+              Gap(10.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 1.h,
+                    width: 140.w,
+                    color: Colors.grey.shade200,
+                  ),
+                  const BuddyBodyText(
+                    text: "OR",
+                    fontSize: 14,
+                  ),
+                  Container(
+                    height: 1.h,
+                    width: 140.w,
+                    color: Colors.grey.shade200,
+                  ),
+                ],
+              ),
+              Gap(10.h),
+              InkWell(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  controller.finishAndCloseTournament();
+                },
+                child: const BuddyBodyText(
+                  text: "Finish and Delete Tournament",
+                  fontSize: 14,
+                  textColor: AppColors.primaryGreenLight,
+                ),
+              ),
             ],
           )),
     );

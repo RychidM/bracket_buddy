@@ -30,6 +30,8 @@ dependencies:
   firebase_analytics: ^10.8.0
   firebase_core: ^2.24.2
   flutter_dotenv: ^5.1.0
+  lottie: ^3.1.0
+  audioplayers: ^6.0.0
 
 dev_dependencies: 
   build_runner: ^2.4.8
@@ -56,5 +58,7 @@ flutter:
     - assets/launcher_icon/
     - assets/avatars/
     - assets/icons/
+    - assets/animation/
+    - assets/audio/
     - .env
 

@@ -138,10 +138,12 @@ class FixturesController extends GetxController {
       if (fixture.playerOne.value?.playerId == player.playerId) {
         fixture.playerOne.value?.winStatus =
             !fixture.playerOne.value!.winStatus;
+        fixture.fixtureWinner.value = fixture.playerOne.value;
         fixture.playerTwo.value?.winStatus = false;
       } else if (fixture.playerTwo.value?.playerId == player.playerId) {
         fixture.playerTwo.value?.winStatus =
             !fixture.playerTwo.value!.winStatus;
+        fixture.fixtureWinner.value = fixture.playerTwo.value;
         fixture.playerOne.value?.winStatus = false;
       }
 
