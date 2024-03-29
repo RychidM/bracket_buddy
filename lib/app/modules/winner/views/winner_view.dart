@@ -81,7 +81,7 @@ class WinnerView extends GetView<WinnerController> {
                   ),
                 ],
               ),
-              Gap(20.h),
+              Gap(60.h),
               BuddyButton(
                   label: "Finish Tournament",
                   onTap: () {
@@ -89,38 +89,38 @@ class WinnerView extends GetView<WinnerController> {
                     Get.offNamedUntil(Routes.HOME,
                         (route) => route.settings.name == Routes.HOME);
                   }),
-              Gap(10.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    height: 1.h,
-                    width: 140.w,
-                    color: Colors.grey.shade200,
-                  ),
-                  const BuddyBodyText(
-                    text: "OR",
-                    fontSize: 14,
-                  ),
-                  Container(
-                    height: 1.h,
-                    width: 140.w,
-                    color: Colors.grey.shade200,
-                  ),
-                ],
-              ),
-              Gap(10.h),
-              InkWell(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  controller.finishAndCloseTournament();
-                },
-                child: const BuddyBodyText(
-                  text: "Finish and Delete Tournament",
-                  fontSize: 14,
-                  textColor: AppColors.primaryGreenLight,
-                ),
-              ),
+              // Gap(10.h),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Container(
+              //       height: 1.h,
+              //       width: 140.w,
+              //       color: Colors.grey.shade200,
+              //     ),
+              //     const BuddyBodyText(
+              //       text: "OR",
+              //       fontSize: 14,
+              //     ),
+              //     Container(
+              //       height: 1.h,
+              //       width: 140.w,
+              //       color: Colors.grey.shade200,
+              //     ),
+              //   ],
+              // ),
+              // Gap(10.h),
+              // InkWell(
+              //   onTap: () {
+              //     HapticFeedback.lightImpact();
+              //     controller.finishAndCloseTournament();
+              //   },
+              //   child: const BuddyBodyText(
+              //     text: "Finish and Delete Tournament",
+              //     fontSize: 14,
+              //     textColor: AppColors.primaryGreenLight,
+              //   ),
+              // ),
             ],
           )),
     );

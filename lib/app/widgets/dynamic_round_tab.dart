@@ -16,10 +16,8 @@ class DynamicFixtureRoundTap extends GetView<FixturesController> {
   final List<Fixture> fixtures;
   final Function(int) onTapSelected;
 
-  const DynamicFixtureRoundTap({
-    super.key,
-    required this.fixtures, required this.onTapSelected
-  });
+  const DynamicFixtureRoundTap(
+      {super.key, required this.fixtures, required this.onTapSelected});
 
   int getNumberRounds(int players) {
     return math.log(players) ~/ math.ln2;
@@ -35,18 +33,11 @@ class DynamicFixtureRoundTap extends GetView<FixturesController> {
         borderRadius: BorderRadius.circular(20.r),
         color: AppColors.primaryGreenLight,
       ),
-      child: ListView.separated(
+      child: ListView.builder(
         padding: EdgeInsets.zero,
         scrollDirection: Axis.horizontal,
         shrinkWrap: true,
         itemCount: getNumberRounds(fixtures.length * 2),
-        separatorBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(top: 5.h),
-            child: const BuddyBodyText(
-                text: "  >>  ", fontSize: 9, textColor: AppColors.whiteColor),
-          );
-        },
         itemBuilder: (context, tabIndex) {
           return InkWell(
             onTap: () {
@@ -60,14 +51,16 @@ class DynamicFixtureRoundTap extends GetView<FixturesController> {
                     borderRadius: BorderRadius.circular(20.r),
                     color: controller.fixtureState.currentStage == tabIndex + 1
                         ? AppColors.whiteColor.withOpacity(.7)
-                        : Colors.transparent
-                ),
+                        : Colors.transparent),
                 child: BuddyBodyText(
-                  text: controller.fixtureState.allFixtures[tabIndex+1]?.first.fixtureRoundName ?? '',
+                  text: controller.fixtureState.allFixtures[tabIndex + 1]?.first
+                          .fixtureRoundName ??
+                      '',
                   fontSize: 11,
-                  textColor: controller.fixtureState.currentStage ==
-                      tabIndex + 1 ? AppColors.primaryTextColor : AppColors
-                      .whiteColor,
+                  textColor:
+                      controller.fixtureState.currentStage == tabIndex + 1
+                          ? AppColors.primaryTextColor
+                          : AppColors.whiteColor,
                 ),
               );
             }),
