@@ -11,8 +11,7 @@ class LeagueTournament {
   @Enumerated(EnumType.name)
   LeagueType? leagueType;
 
-
-    List<Fixture> generateLeagueFixtures(
+  List<Fixture> generateLeagueFixtures(
       List<Player> players, Tournament tournament) {
     List<Fixture> fixtures = [];
 
@@ -35,6 +34,7 @@ class LeagueTournament {
             ..playerOne.value = playerOne
             ..playerTwo.value = playerTwo
             ..tournament.value = tournament
+            ..fixtureRoundName = "Round ${round + 1}"
             ..matchRound = round + 1;
           fixtures.add(fixture);
         }
@@ -48,6 +48,7 @@ class LeagueTournament {
       fixtures.addAll(roundTwoFixtures);
     }
 
+    print(fixtures.map((e) => e.fixtureRoundName));
     return fixtures;
   }
 }

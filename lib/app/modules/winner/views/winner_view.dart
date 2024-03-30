@@ -2,20 +2,16 @@ import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/screen_template.dart';
 import 'package:bracket_buddy/generated/assets.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../data/constants/app_colors.dart';
 import '../../../widgets/create_tournament_header.dart';
 import '../../../widgets/text_widgets/body_text.dart';
-import '../../../widgets/text_widgets/heading_text.dart';
 import '../controllers/winner_controller.dart';
 
 class WinnerView extends GetView<WinnerController> {

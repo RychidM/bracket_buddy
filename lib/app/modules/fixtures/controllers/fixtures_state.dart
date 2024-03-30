@@ -37,7 +37,7 @@ class FixtureState {
   int get currentStage => _currentStage.value;
   set currentStage(int stage) => _currentStage.value = stage;
 
-  final RxMap<int, List<Fixture>> _allFixtures = <int, List<Fixture>>{}.obs;
-  Map<int, List<Fixture>> get allFixtures => _allFixtures;
-  set allFixtures(Map<int, List<Fixture>> fixtures) => _allFixtures.value = fixtures;
+  final RxMap<dynamic, List<Fixture>> _allFixtures = <dynamic, List<Fixture>>{}.obs;
+  Map<dynamic, List<Fixture>> get allFixtures => _allFixtures;
+  set allFixtures(Map<dynamic, List<Fixture>> fixtures) => _allFixtures.value = fixtures;
 }

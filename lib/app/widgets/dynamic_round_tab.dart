@@ -1,3 +1,4 @@
+import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
 import 'package:bracket_buddy/app/widgets/text_widgets/body_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,7 +7,6 @@ import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:get/get_state_manager/src/simple/get_view.dart';
 
 import '../data/constants/app_colors.dart';
-import '../data/theme/app_theme.dart';
 import '../db_services/collections/fixtures_db_model.dart';
 import 'dart:math' as math;
 
@@ -20,7 +20,11 @@ class DynamicFixtureRoundTap extends GetView<FixturesController> {
       {super.key, required this.fixtures, required this.onTapSelected});
 
   int getNumberRounds(int players) {
-    return math.log(players) ~/ math.ln2;
+    return controller
+                .fixtureState.fixtures.first.tournament.value?.tournamentType ==
+            TournamentType.knockout
+        ? math.log(players) ~/ math.ln2
+        : controller.stateAllFixtures.length;
   }
 
   @override

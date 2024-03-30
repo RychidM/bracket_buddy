@@ -98,6 +98,7 @@ class TournamentController extends GetxController {
   setUpTournament() async {
     try {
       List<Fixture> fixtures = [];
+      Map<dynamic, List<Fixture>> fixturesMap = {};
       Tournament savedTournament =
           await _tournamentRepo.createRecord(tournamentState.tournament) ??
               tournamentState.tournament;
@@ -117,15 +118,18 @@ class TournamentController extends GetxController {
       }
       var newFixtures = await _fixturesRepo.createMultiRecords(fixtures);
 
-      // final updatedTournament = savedTournament.copyWith()
-      //   ..knockoutTournament!.currentRound =
-      //       savedTournament.knockoutTournament!.currentRound +1;
-      //
-      // await _tournamentRepo.updateRecord(updatedTournament);
+      if (tournamentState.tournamentType == TournamentType.knockout) {
+        fixturesMap = {newFixtures.first.matchRound ?? 1: newFixtures};
+      } else {
+        for (Fixture fixture in newFixtures) {
+          if (!fixturesMap.containsKey(fixture.fixtureRoundName)) {
+            fixturesMap[fixture.fixtureRoundName] = [];
+          }
+          fixturesMap[fixture.fixtureRoundName]?.add(fixture);
+        }
+      }
+
       tournamentState.fixtures = newFixtures;
-      Map<int, List<Fixture>> fixturesMap = {
-        newFixtures.first.matchRound ?? 1: newFixtures
-      };
 
       Get.offNamed(Routes.FIXTURES, arguments: fixturesMap);
     } on Exception {
