@@ -13,13 +13,13 @@ class FixturesController extends GetxController {
   FixtureState fixtureState = FixtureState();
   final _fixturesRepo = FixturesRepository();
   final _playerRepo = PlayerRepository();
-  Map<dynamic, List<Fixture>> stateAllFixtures = {};
+  Map<int, List<Fixture>> stateAllFixtures = {};
   String tournamentName = "";
 
   @override
   void onInit() {
-    Map<dynamic, List<Fixture>> incomingFixtures =
-        Get.arguments as Map<dynamic, List<Fixture>>;
+    Map<int, List<Fixture>> incomingFixtures =
+        Get.arguments as Map<int, List<Fixture>>;
     fixtureState.fixtures = incomingFixtures[1] ?? [];
     stateAllFixtures = incomingFixtures;
     fixtureState.allFixtures = stateAllFixtures;

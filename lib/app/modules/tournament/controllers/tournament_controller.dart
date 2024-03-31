@@ -98,7 +98,7 @@ class TournamentController extends GetxController {
   setUpTournament() async {
     try {
       List<Fixture> fixtures = [];
-      Map<dynamic, List<Fixture>> fixturesMap = {};
+      Map<int, List<Fixture>> fixturesMap = {};
       Tournament savedTournament =
           await _tournamentRepo.createRecord(tournamentState.tournament) ??
               tournamentState.tournament;
@@ -122,10 +122,10 @@ class TournamentController extends GetxController {
         fixturesMap = {newFixtures.first.matchRound ?? 1: newFixtures};
       } else {
         for (Fixture fixture in newFixtures) {
-          if (!fixturesMap.containsKey(fixture.fixtureRoundName)) {
-            fixturesMap[fixture.fixtureRoundName] = [];
+          if (!fixturesMap.containsKey(fixture.matchRound)) {
+            fixturesMap[fixture.matchRound ?? 0] = [];
           }
-          fixturesMap[fixture.fixtureRoundName]?.add(fixture);
+          fixturesMap[fixture.matchRound]?.add(fixture);
         }
       }
 
