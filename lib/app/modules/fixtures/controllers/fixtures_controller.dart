@@ -102,14 +102,21 @@ class FixturesController extends GetxController {
     }
   }
 
-  bool fixturesHasWinner() {
-    for (var fixture in fixtureState.fixtures) {
-      if (fixture.playerOne.value?.winStatus != true &&
-          fixture.playerTwo.value?.winStatus != true) {
-        return false;
-      }
-    }
-    return true;
+  Future<bool> fixturesHasWinner() async {
+    // for (var fixture in fixtureState.fixtures) {
+    //   if (fixture.playerOne.value?.winStatus != true &&
+    //       fixture.playerTwo.value?.winStatus != true) {
+    //     return false;
+    //   }
+    // }
+    return await _fixturesRepo.allFixturesPlayed(
+        fixtureState.fixtures.first.tournament.value?.tournamentId ?? 0);
+  }
+
+  Future<Player> getHighestPointPlayer() async {
+    List<Player> players = await _playerRepo.getPlayerByScore(fixtureState.fixtures.first.tournament.value?.tournamentId ?? 0);
+    print(players.map((e) => e.points));
+    return players.first;
   }
 
   void getPlayerFixtures(Fixture fixture) async {
@@ -125,48 +132,86 @@ class FixturesController extends GetxController {
   }
 
   /// update player elimination status in selected fixture and update the fixture list.
-  void updatePlayerEliminationStatusInKO(Player player, Fixture fixture) async {
+  void updateFixtureWinner(Player player, Fixture fixture) async {
     List<Fixture> stateFixtures = fixtureState.fixtures;
     int indexOf = stateFixtures.indexOf(fixture);
-
+    late Fixture fixtureToUpdate;
     // check if the fixture is in the list, if yes, update the fixture and the list.
 
     if (indexOf >= 0) {
       //
-      if (fixture.playerOne.value?.playerId == player.playerId) {
-        fixture.playerOne.value?.winStatus =
-            !fixture.playerOne.value!.winStatus;
-        fixture.fixtureWinner.value = fixture.playerOne.value;
-        fixture.playerTwo.value?.winStatus = false;
-      } else if (fixture.playerTwo.value?.playerId == player.playerId) {
-        fixture.playerTwo.value?.winStatus =
-            !fixture.playerTwo.value!.winStatus;
-        fixture.fixtureWinner.value = fixture.playerTwo.value;
-        fixture.playerOne.value?.winStatus = false;
+      switch (fixture.tournament.value?.tournamentType) {
+        case TournamentType.knockout:
+          fixtureToUpdate = await _updateFixtureWinnerInKO(fixture, player);
+          break;
+        case TournamentType.league:
+          fixtureToUpdate = await updatePlayerScoreInLeague(player, fixture);
+        default:
+          break;
       }
 
-      final updatedFixture = fixture.copyWith()..fixtureWinner.value = player;
-
-      await _fixturesRepo.updateRecord(updatedFixture);
-
-      await _playerRepo.updateMultiRecords(
-          [fixture.playerOne.value!, fixture.playerTwo.value!]);
-      stateFixtures[indexOf] = fixture;
+      stateFixtures[indexOf] = fixtureToUpdate;
     }
   }
 
-  /// update player score in selected fixture and update fixture list.
-  void updatePlayerScoreInLeague(Player player, Fixture fixture) async {
+  Future<Fixture> _updateFixtureWinnerInKO(
+      Fixture fixture, Player player) async {
     if (fixture.playerOne.value?.playerId == player.playerId) {
-      fixture.playerOneScore = (fixture.playerOneScore ?? 0) + 3;
-      fixture.playerTwoScore = (fixture.playerTwoScore ?? 0) + 0;
+      fixture.playerOne.value?.winStatus = !fixture.playerOne.value!.winStatus;
+      fixture.fixtureWinner.value = fixture.playerOne.value;
+      fixture.playerTwo.value?.winStatus = false;
     } else if (fixture.playerTwo.value?.playerId == player.playerId) {
-      fixture.playerTwoScore = (fixture.playerTwoScore ?? 0) + 3;
-      fixture.playerOneScore = (fixture.playerOneScore ?? 0) + 0;
+      fixture.playerTwo.value?.winStatus = !fixture.playerTwo.value!.winStatus;
+      fixture.fixtureWinner.value = fixture.playerTwo.value;
+      fixture.playerOne.value?.winStatus = false;
     }
 
-    await _fixturesRepo.updateRecord(fixture);
-    fixtureState.selectedFixture = fixture;
+    final updatedFixture = fixture.copyWith()..fixtureWinner.value = player;
+
+    await _fixturesRepo.updateRecord(updatedFixture);
+
+    await _playerRepo.updateMultiRecords(
+        [fixture.playerOne.value!, fixture.playerTwo.value!]);
+    return fixture;
+  }
+
+  /// update player score in selected fixture and update fixture list.
+  Future<Fixture> updatePlayerScoreInLeague(
+      Player player, Fixture fixture) async {
+    if (fixture.playerOne.value?.playerId == player.playerId) {
+      // fixture.playerOneScore = (fixture.playerOneScore ?? 0) + 3;
+      // fixture.playerTwoScore = (fixture.playerTwoScore ?? 0) + 0;
+
+      if(fixture.matchRound == fixtureState.currentStage){
+        fixture.playerOne.value?.points = fixture.playerOne.value?.points == 0 ? 3 : 0;
+      } else {
+        fixture.playerOne.value?.points = player.points + 3;
+        // fixture.playerTwo.value?.points = (fixture.playerTwo.value?.points ?? 0) - 3;
+      }
+      // fixture.playerTwo.value?.points = 0;
+      fixture.fixtureWinner.value = fixture.playerOne.value;
+    } else if (fixture.playerTwo.value?.playerId == player.playerId) {
+      // fixture.playerTwoScore = (fixture.playerTwoScore ?? 0) + 3;
+      // fixture.playerOneScore = (fixture.playerOneScore ?? 0) + 0;
+
+      if(fixture.matchRound == fixtureState.currentStage){
+        fixture.playerTwo.value?.points = fixture.playerTwo.value?.points == 0 ? 3 : 0;
+      } else {
+        fixture.playerTwo.value?.points = player.points + 3;
+      }
+      // fixture.playerTwo.value?.points = fixture.playerTwo.value?.points == 0 ? 3 : 0;
+      // fixture.playerOne.value?.points = 0;
+      fixture.fixtureWinner.value = fixture.playerTwo.value;
+    }
+
+    final updateFixture = fixture.copyWith()..fixtureWinner.value = player;
+
+    await _fixturesRepo.updateRecord(updateFixture);
+
+    await _playerRepo.updateMultiRecords(
+        [fixture.playerOne.value!, fixture.playerTwo.value!]);
+    return fixture;
+    // fixtureState.selectedFixture = fixture;
   }
 
   void updateCurrentStage(currentStage) {

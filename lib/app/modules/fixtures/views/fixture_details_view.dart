@@ -53,16 +53,14 @@ class FixtureDetailsPage extends StatelessWidget {
                 initState: (_) {},
                 builder: (_) {
                   return FixturesWidget(
-                      p1OnTap: () => controller
-                          .updatePlayerEliminationStatusInKO(
-                              controller.fixtureState.selectedFixture.playerOne
-                                  .value!,
-                              controller.fixtureState.selectedFixture),
-                      p2OnTap: () =>
-                          controller.updatePlayerEliminationStatusInKO(
-                              controller.fixtureState.selectedFixture.playerTwo
-                                  .value!,
-                              controller.fixtureState.selectedFixture),
+                      p1OnTap: () => controller.updateFixtureWinner(
+                          controller
+                              .fixtureState.selectedFixture.playerOne.value!,
+                          controller.fixtureState.selectedFixture),
+                      p2OnTap: () => controller.updateFixtureWinner(
+                          controller
+                              .fixtureState.selectedFixture.playerTwo.value!,
+                          controller.fixtureState.selectedFixture),
                       avatarBgColor: BuddyUtils.getAccentColor(2),
                       fixture: controller.fixtureState.selectedFixture,
                       avatarBgColor2: BuddyUtils.getAccentColor(1));

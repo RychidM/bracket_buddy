@@ -102,13 +102,21 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
         .findAll();
   }
 
-  Future<List<Player>> getPlayerByScore() async {
+  Future<List<Player>> getPlayerByScore(int tournamentId) async {
     isar = await _dbService.tournamentDb;
 
-    return await isar.players.where(sort: Sort.desc).sortByPoints().findAll();
+    return await isar.players
+        .where(sort: Sort.desc)
+        .filter()
+        .tournament((q) => q.tournamentIdEqualTo(tournamentId))
+        .sortByPoints()
+        .findAll();
+
+    // return await isar.players.where(sort: Sort.desc).sortByPoints().findAll();
   }
 
-  Future<List<Player>> getCurrentRoundPlayersByWinStatus(int id, int round) async {
+  Future<List<Player>> getCurrentRoundPlayersByWinStatus(
+      int id, int round) async {
     isar = await _dbService.tournamentDb;
     List<Player> res = await isar.players
         .where()

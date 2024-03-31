@@ -122,6 +122,19 @@ class FixturesRepository extends DbServiceAdaptor<Fixture> {
     }
   }
 
+  Future<bool> allFixturesPlayed(int tournamentId) async {
+    isar = await _dbService.tournamentDb;
+    List<Fixture> fixtures = await isar.fixtures
+        .where()
+        .filter()
+        .tournament((q) => q.tournamentIdEqualTo(tournamentId))
+        .and()
+        .fixtureWinnerIsNull()
+        .findAll();
+    
+    return fixtures.isEmpty;
+  }
+
   Future<void> deleteFixtureAssociatedWithTournament(int tournamentId) async {
     isar = await _dbService.tournamentDb;
     await isar.writeTxn(() => isar.fixtures

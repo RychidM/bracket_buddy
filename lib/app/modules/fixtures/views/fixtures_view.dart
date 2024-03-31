@@ -3,6 +3,7 @@ import 'package:bracket_buddy/app/data/constants/app_strings.dart';
 import 'package:bracket_buddy/app/data/theme/app_theme.dart';
 import 'package:bracket_buddy/app/data/utils.dart';
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
+import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
 import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:bracket_buddy/app/widgets/button_widgets/buddy_button.dart';
 import 'package:bracket_buddy/app/widgets/create_tournament_header.dart';
@@ -16,6 +17,7 @@ import 'package:gap/gap.dart';
 
 import 'package:get/get.dart';
 
+import '../../../db_services/collections/player_db_model.dart';
 import '../../../widgets/dynamic_round_tab.dart';
 import '../../../widgets/text_widgets/heading_text.dart';
 import '../controllers/fixtures_controller.dart';
@@ -79,32 +81,27 @@ class FixturesView extends GetView<FixturesController> {
             Gap(10.h),
             Expanded(
               child: Obx(
-                    () =>
-                    ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemCount: controller.fixtureState.fixtures.length,
-                      itemBuilder: (context, index) {
-                        Color avatarBgColor = BuddyUtils.getAccentColor(index);
-                        Color avatarBgColor2 = BuddyUtils.getAccentColor(
-                            index + 1);
-                        Fixture fixture = controller.fixtureState
-                            .fixtures[index];
-                        return FixturesWidget(
-                          avatarBgColor: avatarBgColor,
-                          fixture: fixture,
-                          avatarBgColor2: avatarBgColor2,
-                          p1OnTap: () =>
-                              controller.updatePlayerEliminationStatusInKO(
-                                  fixture.playerOne.value!, fixture),
-                          p2OnTap: () =>
-                              controller.updatePlayerEliminationStatusInKO(
-                                  fixture.playerTwo.value!, fixture),
-                          onTap: () {
-                            controller.getPlayerFixtures(fixture);
-                          },
-                        );
+                () => ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: controller.fixtureState.fixtures.length,
+                  itemBuilder: (context, index) {
+                    Color avatarBgColor = BuddyUtils.getAccentColor(index);
+                    Color avatarBgColor2 = BuddyUtils.getAccentColor(index + 1);
+                    Fixture fixture = controller.fixtureState.fixtures[index];
+                    return FixturesWidget(
+                      avatarBgColor: avatarBgColor,
+                      fixture: fixture,
+                      avatarBgColor2: avatarBgColor2,
+                      p1OnTap: () => controller.updateFixtureWinner(
+                          fixture.playerOne.value!, fixture),
+                      p2OnTap: () => controller.updateFixtureWinner(
+                          fixture.playerTwo.value!, fixture),
+                      onTap: () {
+                        controller.getPlayerFixtures(fixture);
                       },
-                    ),
+                    );
+                  },
+                ),
               ),
             ),
           ],
@@ -113,12 +110,26 @@ class FixturesView extends GetView<FixturesController> {
     );
   }
 
-  void _handleNextRoundBtnOnTap() {
-    if (controller.fixturesHasWinner()) {
+  void _handleNextRoundBtnOnTap() async {
+    if (await controller.fixturesHasWinner()) {
+      late Player winner;
+      switch (controller
+          .fixtureState.fixtures.first.tournament.value!.tournamentType) {
+        case TournamentType.knockout:
+          winner = controller.fixtureState.fixtures.first.fixtureWinner.value!;
+          controller.fixtureState.fixtures.length > 1
+              ? controller.generateNextFixtures()
+              : null;
+          break;
+        case TournamentType.league:
+          winner = await controller.getHighestPointPlayer();
+          break;
+        default:
+          break;
+      }
       controller.fixtureState.fixtures.length > 1
           ? controller.generateNextFixtures()
-          : Get.offNamed(Routes.WINNER,
-          arguments: controller.fixtureState.fixtures.first.fixtureWinner.value);
+          : Get.offNamed(Routes.WINNER, arguments: winner);
     } else {
       Get.snackbar(
           AppStrings.bSelectWinnerErrTitle, AppStrings.bSelectWinnerErrMsg,
@@ -166,7 +177,8 @@ class FixturesWidget extends StatelessWidget {
               gamerTag: fixture.playerOne.value?.gamerTag ?? "",
               imgString: fixture.playerOne.value?.avatar ?? "",
               p1OnTap: p1OnTap,
-              isWinner: fixture.playerOne.value?.playerId == fixture.fixtureWinner.value?.playerId,
+              isWinner: fixture.playerOne.value?.playerId ==
+                  fixture.fixtureWinner.value?.playerId,
             ),
             const BuddyBodyText(
               text: "VS",
@@ -178,7 +190,8 @@ class FixturesWidget extends StatelessWidget {
               avatarBgColor: avatarBgColor2,
               gamerTag: fixture.playerTwo.value?.gamerTag ?? "",
               imgString: fixture.playerTwo.value?.avatar ?? "",
-              isWinner: fixture.playerTwo.value?.playerId == fixture.fixtureWinner.value?.playerId,
+              isWinner: fixture.playerTwo.value?.playerId ==
+                  fixture.fixtureWinner.value?.playerId,
             ),
           ],
         ),
@@ -210,31 +223,31 @@ class PlayerAvatarWidget extends StatelessWidget {
     return Row(
       children: reverseOder
           ? [
-        PlayerAvatarContainer(
-          playerOnTap: p1OnTap,
-          avatarBgColor: avatarBgColor,
-          imgString: imgString,
-          isWinner: isWinner,
-        ),
-        Gap(6.w),
-        BuddyBodyText(
-          text: gamerTag,
-          fontSize: 12,
-        )
-      ]
+              PlayerAvatarContainer(
+                playerOnTap: p1OnTap,
+                avatarBgColor: avatarBgColor,
+                imgString: imgString,
+                isWinner: isWinner,
+              ),
+              Gap(6.w),
+              BuddyBodyText(
+                text: gamerTag,
+                fontSize: 12,
+              )
+            ]
           : [
-        BuddyBodyText(
-          text: gamerTag,
-          fontSize: 12,
-        ),
-        Gap(6.w),
-        PlayerAvatarContainer(
-          playerOnTap: p1OnTap,
-          avatarBgColor: avatarBgColor,
-          imgString: imgString,
-          isWinner: isWinner,
-        ),
-      ],
+              BuddyBodyText(
+                text: gamerTag,
+                fontSize: 12,
+              ),
+              Gap(6.w),
+              PlayerAvatarContainer(
+                playerOnTap: p1OnTap,
+                avatarBgColor: avatarBgColor,
+                imgString: imgString,
+                isWinner: isWinner,
+              ),
+            ],
     );
   }
 }
@@ -267,8 +280,8 @@ class PlayerAvatarContainer extends StatelessWidget {
               border: isWinner
                   ? Border.all(width: 1.w, color: AppColors.promotionGreen)
                   : Border(
-                right: BorderSide(color: avatarBgColor, width: 1.w),
-              ),
+                      right: BorderSide(color: avatarBgColor, width: 1.w),
+                    ),
             ),
             child: Container(
               height: 35.h,

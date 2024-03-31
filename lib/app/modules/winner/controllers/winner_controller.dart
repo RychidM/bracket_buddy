@@ -1,8 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:bracket_buddy/app/modules/home/controllers/home_controller.dart';
-import 'package:bracket_buddy/app/repository/fixtures_repo.dart';
-import 'package:bracket_buddy/app/repository/player_repo.dart';
-import 'package:bracket_buddy/app/repository/tournament_repo.dart';
 import 'package:bracket_buddy/app/routes/app_pages.dart';
 import 'package:bracket_buddy/generated/assets.dart';
 import 'package:flutter/cupertino.dart';
