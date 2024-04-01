@@ -127,9 +127,7 @@ class FixturesView extends GetView<FixturesController> {
         default:
           break;
       }
-      controller.fixtureState.fixtures.length > 1
-          ? controller.generateNextFixtures()
-          : Get.offNamed(Routes.WINNER, arguments: winner);
+      Get.offNamed(Routes.WINNER, arguments: winner);
     } else {
       Get.snackbar(
           AppStrings.bSelectWinnerErrTitle, AppStrings.bSelectWinnerErrMsg,

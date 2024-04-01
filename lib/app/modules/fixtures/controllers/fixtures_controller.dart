@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
@@ -114,9 +116,9 @@ class FixturesController extends GetxController {
   }
 
   Future<Player> getHighestPointPlayer() async {
-    List<Player> players = await _playerRepo.getPlayerByScore(fixtureState.fixtures.first.tournament.value?.tournamentId ?? 0);
-    print(players.map((e) => e.points));
-    return players.first;
+    List<Player> players = await _playerRepo.getPlayerByScore(
+        fixtureState.fixtures.first.tournament.value?.tournamentId ?? 0);
+    return players.last;
   }
 
   void getPlayerFixtures(Fixture fixture) async {
@@ -175,44 +177,35 @@ class FixturesController extends GetxController {
     return fixture;
   }
 
-  /// update player score in selected fixture and update fixture list.
   Future<Fixture> updatePlayerScoreInLeague(
-      Player player, Fixture fixture) async {
-    if (fixture.playerOne.value?.playerId == player.playerId) {
-      // fixture.playerOneScore = (fixture.playerOneScore ?? 0) + 3;
-      // fixture.playerTwoScore = (fixture.playerTwoScore ?? 0) + 0;
-
-      if(fixture.matchRound == fixtureState.currentStage){
-        fixture.playerOne.value?.points = fixture.playerOne.value?.points == 0 ? 3 : 0;
-      } else {
-        fixture.playerOne.value?.points = player.points + 3;
-        // fixture.playerTwo.value?.points = (fixture.playerTwo.value?.points ?? 0) - 3;
-      }
-      // fixture.playerTwo.value?.points = 0;
-      fixture.fixtureWinner.value = fixture.playerOne.value;
-    } else if (fixture.playerTwo.value?.playerId == player.playerId) {
-      // fixture.playerTwoScore = (fixture.playerTwoScore ?? 0) + 3;
-      // fixture.playerOneScore = (fixture.playerOneScore ?? 0) + 0;
-
-      if(fixture.matchRound == fixtureState.currentStage){
-        fixture.playerTwo.value?.points = fixture.playerTwo.value?.points == 0 ? 3 : 0;
-      } else {
-        fixture.playerTwo.value?.points = player.points + 3;
-      }
-      // fixture.playerTwo.value?.points = fixture.playerTwo.value?.points == 0 ? 3 : 0;
-      // fixture.playerOne.value?.points = 0;
-      fixture.fixtureWinner.value = fixture.playerTwo.value;
+      Player winner, Fixture fixture) async {
+    if (fixture.fixtureWinner.value != null &&
+        winner.playerId == fixture.fixtureWinner.value?.playerId) {
+      return fixture;
     }
 
-    final updateFixture = fixture.copyWith()..fixtureWinner.value = player;
+    if (winner.playerId == fixture.playerOne.value?.playerId) {
+      fixture.playerOne.value?.points += 3;
 
-    await _fixturesRepo.updateRecord(updateFixture);
+      if ((fixture.playerTwo.value?.points ?? 3) >= 3) {
+        fixture.playerTwo.value?.points -= 3;
+      }
+    } else if (fixture.playerTwo.value?.playerId == winner.playerId) {
+      fixture.playerTwo.value?.points += 3;
 
+      if ((fixture.playerOne.value?.points ?? 3) >= 3) {
+        fixture.playerOne.value?.points -= 3;
+      }
+    }
+
+    fixture.fixtureWinner.value = winner;
+    await _fixturesRepo.updateRecord(fixture);
     await _playerRepo.updateMultiRecords(
         [fixture.playerOne.value!, fixture.playerTwo.value!]);
+
     return fixture;
-    // fixtureState.selectedFixture = fixture;
   }
+
 
   void updateCurrentStage(currentStage) {
     fixtureState.currentStage = currentStage;

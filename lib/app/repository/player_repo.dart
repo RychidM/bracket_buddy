@@ -106,10 +106,10 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
     isar = await _dbService.tournamentDb;
 
     return await isar.players
-        .where(sort: Sort.desc)
         .filter()
         .tournament((q) => q.tournamentIdEqualTo(tournamentId))
         .sortByPoints()
+        .thenByPointsDesc()
         .findAll();
 
     // return await isar.players.where(sort: Sort.desc).sortByPoints().findAll();
