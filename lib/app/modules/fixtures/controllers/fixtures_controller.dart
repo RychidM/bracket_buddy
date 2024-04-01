@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:bracket_buddy/app/db_services/collections/fixtures_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
@@ -88,7 +86,6 @@ class FixturesController extends GetxController {
   }
 
   static String getCurrentRoundName(int playersLength) {
-    // int playersLeft = players.length ~/ pow(2, currentRound);
 
     switch (playersLength) {
       case 16:
@@ -105,12 +102,6 @@ class FixturesController extends GetxController {
   }
 
   Future<bool> fixturesHasWinner() async {
-    // for (var fixture in fixtureState.fixtures) {
-    //   if (fixture.playerOne.value?.winStatus != true &&
-    //       fixture.playerTwo.value?.winStatus != true) {
-    //     return false;
-    //   }
-    // }
     return await _fixturesRepo.allFixturesPlayed(
         fixtureState.fixtures.first.tournament.value?.tournamentId ?? 0);
   }

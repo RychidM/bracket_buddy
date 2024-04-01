@@ -48,7 +48,6 @@ class LeagueTournament {
       fixtures.addAll(roundTwoFixtures);
     }
 
-    print(fixtures.map((e) => e.fixtureRoundName));
     return fixtures;
   }
 }

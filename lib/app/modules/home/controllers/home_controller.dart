@@ -28,7 +28,6 @@ class HomeController extends GetxController {
 
   void tournamentSelected(int id) async {
     Map<int, List<Fixture>> fixtures = await _fixtureRepo.getFixturesByTournament(id);
-    // await _fixtureRepo.getAllRecords();
     Get.toNamed(Routes.FIXTURES, arguments: fixtures);
   }
 

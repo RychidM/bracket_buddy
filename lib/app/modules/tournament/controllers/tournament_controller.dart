@@ -70,8 +70,6 @@ class TournamentController extends GetxController {
       players.add(player);
     }
 
-    // var genPlayers = await _playerRepo.createMultiRecords(players);
-    // print(genPlayers.first?.gamerTag);
     tournamentState.players = players;
   }
 

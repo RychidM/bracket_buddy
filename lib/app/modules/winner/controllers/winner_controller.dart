@@ -1,7 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
 import 'package:bracket_buddy/app/modules/home/controllers/home_controller.dart';
 import 'package:bracket_buddy/app/routes/app_pages.dart';
-import 'package:bracket_buddy/generated/assets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -16,10 +14,6 @@ class WinnerController extends GetxController {
     winner = Get.arguments as Player;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       HapticFeedback.vibrate();
-
-      var player = AudioPlayer();
-      await player.setSourceAsset(Assets.audioFireworks);
-      await player.resume();
     });
     super.onInit();
   }

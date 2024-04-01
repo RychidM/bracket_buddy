@@ -34,16 +34,19 @@ class AppPages {
       name: _Paths.TOURNAMENT,
       page: () => const TournamentView(),
       binding: TournamentBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.FIXTURES,
       page: () => const FixturesView(),
       binding: FixturesBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.WINNER,
       page: () => const WinnerView(),
       binding: WinnerBinding(),
+      transition: Transition.fadeIn,
     ),
   ];
 }

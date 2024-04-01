@@ -27,7 +27,6 @@ class KnockoutTournament {
         ..matchRound = 1;
       fixtures.add(fixture);
     }
-    // tournament.knockoutTournament?.currentRound++;
     return fixtures;
   }
 
@@ -51,7 +50,6 @@ class KnockoutTournament {
         ..matchRound = (tournament.knockoutTournament!.currentRound +1));
     }
 
-    // tournament.knockoutTournament?.currentRound++;
     return nextRoundMatches;
   }
 

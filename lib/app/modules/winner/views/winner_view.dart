@@ -28,17 +28,6 @@ class WinnerView extends GetView<WinnerController> {
             children: [
               Stack(
                 children: [
-                  // GestureDetector(
-                  //   onTap: () {
-                  //     HapticFeedback.lightImpact();
-                  //     Get.back();
-                  //   },
-                  //   child: const BuddyHeadingText(
-                  //     text: "<",
-                  //     fontSize: 58,
-                  //     textColor: AppColors.primaryGreenLight,
-                  //   ),
-                  // ),
                   Align(
                     alignment: Alignment.topCenter,
                     child: Column(
@@ -85,38 +74,6 @@ class WinnerView extends GetView<WinnerController> {
                     Get.offNamedUntil(Routes.HOME,
                         (route) => route.settings.name == Routes.HOME);
                   }),
-              // Gap(10.h),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Container(
-              //       height: 1.h,
-              //       width: 140.w,
-              //       color: Colors.grey.shade200,
-              //     ),
-              //     const BuddyBodyText(
-              //       text: "OR",
-              //       fontSize: 14,
-              //     ),
-              //     Container(
-              //       height: 1.h,
-              //       width: 140.w,
-              //       color: Colors.grey.shade200,
-              //     ),
-              //   ],
-              // ),
-              // Gap(10.h),
-              // InkWell(
-              //   onTap: () {
-              //     HapticFeedback.lightImpact();
-              //     controller.finishAndCloseTournament();
-              //   },
-              //   child: const BuddyBodyText(
-              //     text: "Finish and Delete Tournament",
-              //     fontSize: 14,
-              //     textColor: AppColors.primaryGreenLight,
-              //   ),
-              // ),
             ],
           )),
     );
