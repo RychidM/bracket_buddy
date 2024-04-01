@@ -6,6 +6,8 @@ import 'package:bracket_buddy/app/db_services/models/knockout_tournament.dart';
 import 'package:bracket_buddy/app/db_services/models/league_tournament.dart';
 import 'package:bracket_buddy/app/modules/tournament/controllers/tournament_state.dart';
 import 'package:bracket_buddy/app/modules/tournament/data/tournament_dummy_data.dart';
+import 'package:bracket_buddy/app/repository/player_repo.dart';
+import 'package:bracket_buddy/app/repository/tournament_repo.dart';
 import 'package:english_words/english_words.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +19,8 @@ class TournamentController extends GetxController {
   TournamentState tournamentState = TournamentState();
 
   final FixturesRepository _fixturesRepo = FixturesRepository();
+  final _tournamentRepo = TournamentRepository();
+  final _playerRepo = PlayerRepository();
 
   @override
   void onInit() async {
@@ -60,14 +64,12 @@ class TournamentController extends GetxController {
 
       final player = Player()
         ..gamerTag = gamerTag
-        ..tournaments.value = tournamentState.tournament
+        ..tournament.value = tournamentState.tournament
         ..avatar = playerAvatar;
 
       players.add(player);
     }
 
-    // var genPlayers = await _playerRepo.createMultiRecords(players);
-    // print(genPlayers.first?.gamerTag);
     tournamentState.players = players;
   }
 
@@ -83,39 +85,53 @@ class TournamentController extends GetxController {
       ..tournamentType = tournamentState.tournamentType;
 
     if (tournamentState.tournamentType == TournamentType.knockout) {
-      tournament.knockoutTournament = KnockoutTournament()..currentRound = 0;
+      tournament.knockoutTournament = KnockoutTournament()..currentRound = 1;
     } else {
       tournament.leagueTournament = LeagueTournament();
     }
 
-    // List<Tournament> existingTournaments =
-    //     await _tournamentRepo.getAllRecords();
-    // if (existingTournaments.isNotEmpty) {
-    //   await _tournamentRepo.deleteMultiRecords(
-    //       existingTournaments.map((e) => e.tournamentId).toList());
-    // }
-    // var createdTour =
-    //     await _tournamentRepo.createRecord(tournament) ?? tournament;
-    // print(createdTour);
     tournamentState.tournament = tournament;
   }
 
   setUpTournament() async {
-    List<Fixtures> fixtures = [];
-    if (tournamentState.tournamentType == TournamentType.knockout) {
-      fixtures = tournamentState.tournament.knockoutTournament
-              ?.generateKnockOutMatches(
-                  tournamentState.players, tournamentState.tournament) ??
-          [];
-    } else {
-      fixtures = tournamentState.tournament.leagueTournament
-              ?.generateLeagueFixtures(
-                  tournamentState.players, tournamentState.tournament) ??
-          [];
+    try {
+      List<Fixture> fixtures = [];
+      Map<int, List<Fixture>> fixturesMap = {};
+      Tournament savedTournament =
+          await _tournamentRepo.createRecord(tournamentState.tournament) ??
+              tournamentState.tournament;
+
+      List<Player> savedPlayers =
+          await _playerRepo.createMultiRecords(tournamentState.players);
+      tournamentState.tournament;
+
+      if (tournamentState.tournamentType == TournamentType.knockout) {
+        fixtures = tournamentState.tournament.knockoutTournament
+                ?.generateKnockOutMatches(savedPlayers, savedTournament) ??
+            [];
+      } else {
+        fixtures = tournamentState.tournament.leagueTournament
+                ?.generateLeagueFixtures(savedPlayers, savedTournament) ??
+            [];
+      }
+      var newFixtures = await _fixturesRepo.createMultiRecords(fixtures);
+
+      if (tournamentState.tournamentType == TournamentType.knockout) {
+        fixturesMap = {newFixtures.first.matchRound ?? 1: newFixtures};
+      } else {
+        for (Fixture fixture in newFixtures) {
+          if (!fixturesMap.containsKey(fixture.matchRound)) {
+            fixturesMap[fixture.matchRound ?? 0] = [];
+          }
+          fixturesMap[fixture.matchRound]?.add(fixture);
+        }
+      }
+
+      tournamentState.fixtures = newFixtures;
+
+      Get.offNamed(Routes.FIXTURES, arguments: fixturesMap);
+    } on Exception {
+      Get.snackbar("Error", "Error creating fixtures");
     }
-    var newFixtures = await _fixturesRepo.createMultiRecords(fixtures);
-    print(newFixtures.first);
-    tournamentState.fixtures = newFixtures.where((element) => element != null).toList().cast<Fixtures>();
-    Get.offNamed(Routes.FIXTURES, arguments: tournamentState.fixtures);
   }
 }

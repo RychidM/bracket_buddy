@@ -8,6 +8,8 @@ import '../modules/splash_screen/bindings/splash_screen_binding.dart';
 import '../modules/splash_screen/views/splash_screen_view.dart';
 import '../modules/tournament/bindings/tournament_binding.dart';
 import '../modules/tournament/views/tournament_view.dart';
+import '../modules/winner/bindings/winner_binding.dart';
+import '../modules/winner/views/winner_view.dart';
 
 part 'app_routes.dart';
 
@@ -32,11 +34,19 @@ class AppPages {
       name: _Paths.TOURNAMENT,
       page: () => const TournamentView(),
       binding: TournamentBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: _Paths.FIXTURES,
       page: () => const FixturesView(),
       binding: FixturesBinding(),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: _Paths.WINNER,
+      page: () => const WinnerView(),
+      binding: WinnerBinding(),
+      transition: Transition.fadeIn,
     ),
   ];
 }

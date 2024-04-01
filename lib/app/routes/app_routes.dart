@@ -9,6 +9,7 @@ abstract class Routes {
   static const SPLASH_SCREEN = _Paths.SPLASH_SCREEN;
   static const TOURNAMENT = _Paths.TOURNAMENT;
   static const FIXTURES = _Paths.FIXTURES;
+  static const WINNER = _Paths.WINNER;
 }
 
 abstract class _Paths {
@@ -17,4 +18,5 @@ abstract class _Paths {
   static const SPLASH_SCREEN = '/splash-screen';
   static const TOURNAMENT = '/tournament';
   static const FIXTURES = '/fixtures';
+  static const WINNER = '/fixture-info';
 }

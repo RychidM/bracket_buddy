@@ -2,6 +2,9 @@
 class Assets {
   Assets._();
 
+  static const String animationFireworksAnimation = 'assets/animation/fireworks_animation.json';
+  static const String animationWinnerAnimation = 'assets/animation/winner_animation.json';
+  static const String audioFireworks = 'assets/audio/fireworks.mp3';
   static const String avatarsAang = 'assets/avatars/aang.png';
   static const String avatarsAnimeCinq = 'assets/avatars/anime_cinq.png';
   static const String avatarsAnimeDos = 'assets/avatars/anime_dos.png';
@@ -38,6 +41,9 @@ class Assets {
   static const String avatarsStewie = 'assets/avatars/stewie.png';
   static const String avatarsToff = 'assets/avatars/toff.png';
   static const String avatarsZuko = 'assets/avatars/zuko.png';
+  static const String bracketBuddy = '.env';
+  static const String iconsClose = 'assets/icons/close.svg';
+  static const String iconsCrown = 'assets/icons/crown.png';
   static const String imagesBgImg = 'assets/images/bg_img.png';
   static const String imagesBgSt = 'assets/images/bg_st.png';
   static const String imagesBracketBuddyLogo = 'assets/images/bracket_buddy_logo.png';

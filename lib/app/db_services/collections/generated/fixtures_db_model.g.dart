@@ -9,34 +9,39 @@ part of '../fixtures_db_model.dart';
 // coverage:ignore-file
 // ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
 
-extension GetFixturesCollection on Isar {
-  IsarCollection<Fixtures> get fixtures => this.collection();
+extension GetFixtureCollection on Isar {
+  IsarCollection<Fixture> get fixtures => this.collection();
 }
 
-const FixturesSchema = CollectionSchema(
-  name: r'Fixtures',
-  id: 1213557845256013914,
+const FixtureSchema = CollectionSchema(
+  name: r'Fixture',
+  id: 2779665279279999780,
   properties: {
-    r'matchRound': PropertySchema(
+    r'fixtureRoundName': PropertySchema(
       id: 0,
+      name: r'fixtureRoundName',
+      type: IsarType.string,
+    ),
+    r'matchRound': PropertySchema(
+      id: 1,
       name: r'matchRound',
       type: IsarType.long,
     ),
     r'playerOneScore': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'playerOneScore',
       type: IsarType.long,
     ),
     r'playerTwoScore': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'playerTwoScore',
       type: IsarType.long,
     )
   },
-  estimateSize: _fixturesEstimateSize,
-  serialize: _fixturesSerialize,
-  deserialize: _fixturesDeserialize,
-  deserializeProp: _fixturesDeserializeProp,
+  estimateSize: _fixtureEstimateSize,
+  serialize: _fixtureSerialize,
+  deserialize: _fixtureDeserialize,
+  deserializeProp: _fixtureDeserializeProp,
   idName: r'fixtureId',
   indexes: {
     r'playerOneScore': IndexSchema(
@@ -81,66 +86,75 @@ const FixturesSchema = CollectionSchema(
   },
   links: {
     r'playerOne': LinkSchema(
-      id: -8352533949920539717,
+      id: 3937956257251945832,
       name: r'playerOne',
       target: r'Player',
       single: true,
     ),
     r'playerTwo': LinkSchema(
-      id: -9062248374037895895,
+      id: -8104155939434258203,
       name: r'playerTwo',
       target: r'Player',
       single: true,
     ),
+    r'fixtureWinner': LinkSchema(
+      id: 225407294888788772,
+      name: r'fixtureWinner',
+      target: r'Player',
+      single: true,
+    ),
     r'tournament': LinkSchema(
-      id: 7265541676101190959,
+      id: -6527774612563809017,
       name: r'tournament',
       target: r'Tournament',
       single: true,
     )
   },
   embeddedSchemas: {},
-  getId: _fixturesGetId,
-  getLinks: _fixturesGetLinks,
-  attach: _fixturesAttach,
+  getId: _fixtureGetId,
+  getLinks: _fixtureGetLinks,
+  attach: _fixtureAttach,
   version: '3.1.0+1',
 );
 
-int _fixturesEstimateSize(
-  Fixtures object,
+int _fixtureEstimateSize(
+  Fixture object,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
+  bytesCount += 3 + object.fixtureRoundName.length * 3;
   return bytesCount;
 }
 
-void _fixturesSerialize(
-  Fixtures object,
+void _fixtureSerialize(
+  Fixture object,
   IsarWriter writer,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.matchRound);
-  writer.writeLong(offsets[1], object.playerOneScore);
-  writer.writeLong(offsets[2], object.playerTwoScore);
+  writer.writeString(offsets[0], object.fixtureRoundName);
+  writer.writeLong(offsets[1], object.matchRound);
+  writer.writeLong(offsets[2], object.playerOneScore);
+  writer.writeLong(offsets[3], object.playerTwoScore);
 }
 
-Fixtures _fixturesDeserialize(
+Fixture _fixtureDeserialize(
   Id id,
   IsarReader reader,
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Fixtures();
+  final object = Fixture();
   object.fixtureId = id;
-  object.matchRound = reader.readLongOrNull(offsets[0]);
-  object.playerOneScore = reader.readLongOrNull(offsets[1]);
-  object.playerTwoScore = reader.readLongOrNull(offsets[2]);
+  object.fixtureRoundName = reader.readString(offsets[0]);
+  object.matchRound = reader.readLongOrNull(offsets[1]);
+  object.playerOneScore = reader.readLongOrNull(offsets[2]);
+  object.playerTwoScore = reader.readLongOrNull(offsets[3]);
   return object;
 }
 
-P _fixturesDeserializeProp<P>(
+P _fixtureDeserializeProp<P>(
   IsarReader reader,
   int propertyId,
   int offset,
@@ -148,40 +162,49 @@ P _fixturesDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readString(offset)) as P;
     case 1:
       return (reader.readLongOrNull(offset)) as P;
     case 2:
+      return (reader.readLongOrNull(offset)) as P;
+    case 3:
       return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
 
-Id _fixturesGetId(Fixtures object) {
+Id _fixtureGetId(Fixture object) {
   return object.fixtureId;
 }
 
-List<IsarLinkBase<dynamic>> _fixturesGetLinks(Fixtures object) {
-  return [object.playerOne, object.playerTwo, object.tournament];
+List<IsarLinkBase<dynamic>> _fixtureGetLinks(Fixture object) {
+  return [
+    object.playerOne,
+    object.playerTwo,
+    object.fixtureWinner,
+    object.tournament
+  ];
 }
 
-void _fixturesAttach(IsarCollection<dynamic> col, Id id, Fixtures object) {
+void _fixtureAttach(IsarCollection<dynamic> col, Id id, Fixture object) {
   object.fixtureId = id;
   object.playerOne.attach(col, col.isar.collection<Player>(), r'playerOne', id);
   object.playerTwo.attach(col, col.isar.collection<Player>(), r'playerTwo', id);
+  object.fixtureWinner
+      .attach(col, col.isar.collection<Player>(), r'fixtureWinner', id);
   object.tournament
       .attach(col, col.isar.collection<Tournament>(), r'tournament', id);
 }
 
-extension FixturesQueryWhereSort on QueryBuilder<Fixtures, Fixtures, QWhere> {
-  QueryBuilder<Fixtures, Fixtures, QAfterWhere> anyFixtureId() {
+extension FixtureQueryWhereSort on QueryBuilder<Fixture, Fixture, QWhere> {
+  QueryBuilder<Fixture, Fixture, QAfterWhere> anyFixtureId() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(const IdWhereClause.any());
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhere> anyPlayerOneScore() {
+  QueryBuilder<Fixture, Fixture, QAfterWhere> anyPlayerOneScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'playerOneScore'),
@@ -189,7 +212,7 @@ extension FixturesQueryWhereSort on QueryBuilder<Fixtures, Fixtures, QWhere> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhere> anyPlayerTwoScore() {
+  QueryBuilder<Fixture, Fixture, QAfterWhere> anyPlayerTwoScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'playerTwoScore'),
@@ -197,7 +220,7 @@ extension FixturesQueryWhereSort on QueryBuilder<Fixtures, Fixtures, QWhere> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhere> anyMatchRound() {
+  QueryBuilder<Fixture, Fixture, QAfterWhere> anyMatchRound() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         const IndexWhereClause.any(indexName: r'matchRound'),
@@ -206,8 +229,8 @@ extension FixturesQueryWhereSort on QueryBuilder<Fixtures, Fixtures, QWhere> {
   }
 }
 
-extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> fixtureIdEqualTo(
+extension FixtureQueryWhere on QueryBuilder<Fixture, Fixture, QWhereClause> {
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> fixtureIdEqualTo(
       Id fixtureId) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IdWhereClause.between(
@@ -217,7 +240,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> fixtureIdNotEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> fixtureIdNotEqualTo(
       Id fixtureId) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -240,7 +263,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> fixtureIdGreaterThan(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> fixtureIdGreaterThan(
       Id fixtureId,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
@@ -250,7 +273,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> fixtureIdLessThan(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> fixtureIdLessThan(
       Id fixtureId,
       {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
@@ -260,7 +283,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> fixtureIdBetween(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> fixtureIdBetween(
     Id lowerFixtureId,
     Id upperFixtureId, {
     bool includeLower = true,
@@ -276,7 +299,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerOneScoreIsNull() {
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerOneScoreIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'playerOneScore',
@@ -285,8 +308,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause>
-      playerOneScoreIsNotNull() {
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerOneScoreIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
         indexName: r'playerOneScore',
@@ -297,7 +319,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerOneScoreEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerOneScoreEqualTo(
       int? playerOneScore) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
@@ -307,7 +329,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerOneScoreNotEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerOneScoreNotEqualTo(
       int? playerOneScore) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -342,7 +364,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerOneScoreGreaterThan(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerOneScoreGreaterThan(
     int? playerOneScore, {
     bool include = false,
   }) {
@@ -356,7 +378,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerOneScoreLessThan(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerOneScoreLessThan(
     int? playerOneScore, {
     bool include = false,
   }) {
@@ -370,7 +392,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerOneScoreBetween(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerOneScoreBetween(
     int? lowerPlayerOneScore,
     int? upperPlayerOneScore, {
     bool includeLower = true,
@@ -387,7 +409,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerTwoScoreIsNull() {
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerTwoScoreIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'playerTwoScore',
@@ -396,8 +418,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause>
-      playerTwoScoreIsNotNull() {
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerTwoScoreIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
         indexName: r'playerTwoScore',
@@ -408,7 +429,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerTwoScoreEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerTwoScoreEqualTo(
       int? playerTwoScore) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
@@ -418,7 +439,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerTwoScoreNotEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerTwoScoreNotEqualTo(
       int? playerTwoScore) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -453,7 +474,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerTwoScoreGreaterThan(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerTwoScoreGreaterThan(
     int? playerTwoScore, {
     bool include = false,
   }) {
@@ -467,7 +488,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerTwoScoreLessThan(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerTwoScoreLessThan(
     int? playerTwoScore, {
     bool include = false,
   }) {
@@ -481,7 +502,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> playerTwoScoreBetween(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> playerTwoScoreBetween(
     int? lowerPlayerTwoScore,
     int? upperPlayerTwoScore, {
     bool includeLower = true,
@@ -498,7 +519,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> matchRoundIsNull() {
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> matchRoundIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
         indexName: r'matchRound',
@@ -507,7 +528,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> matchRoundIsNotNull() {
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> matchRoundIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.between(
         indexName: r'matchRound',
@@ -518,7 +539,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> matchRoundEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> matchRoundEqualTo(
       int? matchRound) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(IndexWhereClause.equalTo(
@@ -528,7 +549,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> matchRoundNotEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> matchRoundNotEqualTo(
       int? matchRound) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
@@ -563,7 +584,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> matchRoundGreaterThan(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> matchRoundGreaterThan(
     int? matchRound, {
     bool include = false,
   }) {
@@ -577,7 +598,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> matchRoundLessThan(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> matchRoundLessThan(
     int? matchRound, {
     bool include = false,
   }) {
@@ -591,7 +612,7 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterWhereClause> matchRoundBetween(
+  QueryBuilder<Fixture, Fixture, QAfterWhereClause> matchRoundBetween(
     int? lowerMatchRound,
     int? upperMatchRound, {
     bool includeLower = true,
@@ -609,9 +630,9 @@ extension FixturesQueryWhere on QueryBuilder<Fixtures, Fixtures, QWhereClause> {
   }
 }
 
-extension FixturesQueryFilter
-    on QueryBuilder<Fixtures, Fixtures, QFilterCondition> {
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> fixtureIdEqualTo(
+extension FixtureQueryFilter
+    on QueryBuilder<Fixture, Fixture, QFilterCondition> {
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> fixtureIdEqualTo(
       Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -621,7 +642,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> fixtureIdGreaterThan(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> fixtureIdGreaterThan(
     Id value, {
     bool include = false,
   }) {
@@ -634,7 +655,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> fixtureIdLessThan(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> fixtureIdLessThan(
     Id value, {
     bool include = false,
   }) {
@@ -647,7 +668,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> fixtureIdBetween(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> fixtureIdBetween(
     Id lower,
     Id upper, {
     bool includeLower = true,
@@ -664,7 +685,142 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> matchRoundIsNull() {
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> fixtureRoundNameEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
+      fixtureRoundNameGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
+      fixtureRoundNameLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> fixtureRoundNameBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'fixtureRoundName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
+      fixtureRoundNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
+      fixtureRoundNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
+      fixtureRoundNameContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'fixtureRoundName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> fixtureRoundNameMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'fixtureRoundName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
+      fixtureRoundNameIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fixtureRoundName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
+      fixtureRoundNameIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'fixtureRoundName',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> matchRoundIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'matchRound',
@@ -672,8 +828,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
-      matchRoundIsNotNull() {
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> matchRoundIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
         property: r'matchRound',
@@ -681,7 +836,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> matchRoundEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> matchRoundEqualTo(
       int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -691,7 +846,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> matchRoundGreaterThan(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> matchRoundGreaterThan(
     int? value, {
     bool include = false,
   }) {
@@ -704,7 +859,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> matchRoundLessThan(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> matchRoundLessThan(
     int? value, {
     bool include = false,
   }) {
@@ -717,7 +872,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> matchRoundBetween(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> matchRoundBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -734,8 +889,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
-      playerOneScoreIsNull() {
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerOneScoreIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'playerOneScore',
@@ -743,7 +897,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
       playerOneScoreIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -752,7 +906,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerOneScoreEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerOneScoreEqualTo(
       int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -762,7 +916,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
       playerOneScoreGreaterThan(
     int? value, {
     bool include = false,
@@ -776,8 +930,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
-      playerOneScoreLessThan(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerOneScoreLessThan(
     int? value, {
     bool include = false,
   }) {
@@ -790,7 +943,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerOneScoreBetween(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerOneScoreBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -807,8 +960,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
-      playerTwoScoreIsNull() {
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerTwoScoreIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNull(
         property: r'playerTwoScore',
@@ -816,7 +968,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
       playerTwoScoreIsNotNull() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(const FilterCondition.isNotNull(
@@ -825,7 +977,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerTwoScoreEqualTo(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerTwoScoreEqualTo(
       int? value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -835,7 +987,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition>
       playerTwoScoreGreaterThan(
     int? value, {
     bool include = false,
@@ -849,8 +1001,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition>
-      playerTwoScoreLessThan(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerTwoScoreLessThan(
     int? value, {
     bool include = false,
   }) {
@@ -863,7 +1014,7 @@ extension FixturesQueryFilter
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerTwoScoreBetween(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerTwoScoreBetween(
     int? lower,
     int? upper, {
     bool includeLower = true,
@@ -881,182 +1032,233 @@ extension FixturesQueryFilter
   }
 }
 
-extension FixturesQueryObject
-    on QueryBuilder<Fixtures, Fixtures, QFilterCondition> {}
+extension FixtureQueryObject
+    on QueryBuilder<Fixture, Fixture, QFilterCondition> {}
 
-extension FixturesQueryLinks
-    on QueryBuilder<Fixtures, Fixtures, QFilterCondition> {
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerOne(
+extension FixtureQueryLinks
+    on QueryBuilder<Fixture, Fixture, QFilterCondition> {
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerOne(
       FilterQuery<Player> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'playerOne');
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerOneIsNull() {
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerOneIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'playerOne', 0, true, 0, true);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerTwo(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerTwo(
       FilterQuery<Player> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'playerTwo');
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> playerTwoIsNull() {
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> playerTwoIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'playerTwo', 0, true, 0, true);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> tournament(
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> fixtureWinner(
+      FilterQuery<Player> q) {
+    return QueryBuilder.apply(this, (query) {
+      return query.link(q, r'fixtureWinner');
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> fixtureWinnerIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.linkLength(r'fixtureWinner', 0, true, 0, true);
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> tournament(
       FilterQuery<Tournament> q) {
     return QueryBuilder.apply(this, (query) {
       return query.link(q, r'tournament');
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterFilterCondition> tournamentIsNull() {
+  QueryBuilder<Fixture, Fixture, QAfterFilterCondition> tournamentIsNull() {
     return QueryBuilder.apply(this, (query) {
       return query.linkLength(r'tournament', 0, true, 0, true);
     });
   }
 }
 
-extension FixturesQuerySortBy on QueryBuilder<Fixtures, Fixtures, QSortBy> {
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByMatchRound() {
+extension FixtureQuerySortBy on QueryBuilder<Fixture, Fixture, QSortBy> {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> sortByFixtureRoundName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fixtureRoundName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> sortByFixtureRoundNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fixtureRoundName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> sortByMatchRound() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'matchRound', Sort.asc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByMatchRoundDesc() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> sortByMatchRoundDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'matchRound', Sort.desc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByPlayerOneScore() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> sortByPlayerOneScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'playerOneScore', Sort.asc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByPlayerOneScoreDesc() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> sortByPlayerOneScoreDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'playerOneScore', Sort.desc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByPlayerTwoScore() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> sortByPlayerTwoScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'playerTwoScore', Sort.asc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> sortByPlayerTwoScoreDesc() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> sortByPlayerTwoScoreDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'playerTwoScore', Sort.desc);
     });
   }
 }
 
-extension FixturesQuerySortThenBy
-    on QueryBuilder<Fixtures, Fixtures, QSortThenBy> {
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByFixtureId() {
+extension FixtureQuerySortThenBy
+    on QueryBuilder<Fixture, Fixture, QSortThenBy> {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByFixtureId() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'fixtureId', Sort.asc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByFixtureIdDesc() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByFixtureIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'fixtureId', Sort.desc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByMatchRound() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByFixtureRoundName() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fixtureRoundName', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByFixtureRoundNameDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fixtureRoundName', Sort.desc);
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByMatchRound() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'matchRound', Sort.asc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByMatchRoundDesc() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByMatchRoundDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'matchRound', Sort.desc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByPlayerOneScore() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByPlayerOneScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'playerOneScore', Sort.asc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByPlayerOneScoreDesc() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByPlayerOneScoreDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'playerOneScore', Sort.desc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByPlayerTwoScore() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByPlayerTwoScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'playerTwoScore', Sort.asc);
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QAfterSortBy> thenByPlayerTwoScoreDesc() {
+  QueryBuilder<Fixture, Fixture, QAfterSortBy> thenByPlayerTwoScoreDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'playerTwoScore', Sort.desc);
     });
   }
 }
 
-extension FixturesQueryWhereDistinct
-    on QueryBuilder<Fixtures, Fixtures, QDistinct> {
-  QueryBuilder<Fixtures, Fixtures, QDistinct> distinctByMatchRound() {
+extension FixtureQueryWhereDistinct
+    on QueryBuilder<Fixture, Fixture, QDistinct> {
+  QueryBuilder<Fixture, Fixture, QDistinct> distinctByFixtureRoundName(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'fixtureRoundName',
+          caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<Fixture, Fixture, QDistinct> distinctByMatchRound() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'matchRound');
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QDistinct> distinctByPlayerOneScore() {
+  QueryBuilder<Fixture, Fixture, QDistinct> distinctByPlayerOneScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'playerOneScore');
     });
   }
 
-  QueryBuilder<Fixtures, Fixtures, QDistinct> distinctByPlayerTwoScore() {
+  QueryBuilder<Fixture, Fixture, QDistinct> distinctByPlayerTwoScore() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'playerTwoScore');
     });
   }
 }
 
-extension FixturesQueryProperty
-    on QueryBuilder<Fixtures, Fixtures, QQueryProperty> {
-  QueryBuilder<Fixtures, int, QQueryOperations> fixtureIdProperty() {
+extension FixtureQueryProperty
+    on QueryBuilder<Fixture, Fixture, QQueryProperty> {
+  QueryBuilder<Fixture, int, QQueryOperations> fixtureIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'fixtureId');
     });
   }
 
-  QueryBuilder<Fixtures, int?, QQueryOperations> matchRoundProperty() {
+  QueryBuilder<Fixture, String, QQueryOperations> fixtureRoundNameProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'fixtureRoundName');
+    });
+  }
+
+  QueryBuilder<Fixture, int?, QQueryOperations> matchRoundProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'matchRound');
     });
   }
 
-  QueryBuilder<Fixtures, int?, QQueryOperations> playerOneScoreProperty() {
+  QueryBuilder<Fixture, int?, QQueryOperations> playerOneScoreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'playerOneScore');
     });
   }
 
-  QueryBuilder<Fixtures, int?, QQueryOperations> playerTwoScoreProperty() {
+  QueryBuilder<Fixture, int?, QQueryOperations> playerTwoScoreProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'playerTwoScore');
     });

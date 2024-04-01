@@ -10,7 +10,7 @@ class TournamentRepository extends DbServiceAdaptor<Tournament> {
   @override
   Future<List<Tournament>> createMultiRecords(List<Tournament> records) async {
     isar = await _dbService.tournamentDb;
-      final ids = await isar.writeTxn(() => isar.tournaments.putAll(records));
+      final ids = await isar.writeTxn(() async => await isar.tournaments.putAll(records));
        await isar.tournaments.getAll(ids);
        return await isar.tournaments.where().findAll();
   }
@@ -61,6 +61,19 @@ class TournamentRepository extends DbServiceAdaptor<Tournament> {
       final tournament = await isar.tournaments.get(record.tournamentId);
       if (tournament != null) {
         await isar.tournaments.put(record);
+      }
+    });
+  }
+  
+  @override
+  Future<void> updateMultiRecords(List<Tournament> records) async{
+    isar = await _dbService.tournamentDb;
+    await isar.writeTxn(() async {
+      for (var record in records) {
+        final tournament = await isar.tournaments.get(record.tournamentId);
+        if (tournament != null) {
+          await isar.tournaments.put(record);
+        }
       }
     });
   }

@@ -16,8 +16,7 @@ class IsarDbService {
   Future<Isar> openTournamentDb() async {
     if (Isar.instanceNames.isEmpty) {
       final dir = await getApplicationDocumentsDirectory();
-      print(dir.path);
-      return await Isar.open([TournamentSchema, FixturesSchema, PlayerSchema],
+      return await Isar.open([TournamentSchema, FixtureSchema, PlayerSchema],
           directory: dir.path,
           inspector: true,
           name: AppStrings.bDbInstanceName);
@@ -34,5 +33,6 @@ class IsarDbService {
     final isar = await tournamentDb;
 
     isar.clear();
+    
   }
 }

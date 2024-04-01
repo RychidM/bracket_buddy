@@ -10,9 +10,13 @@ class BuddyScreenTemplate extends StatelessWidget {
     super.key,
     this.isHintVisible = true,
     required this.mainChild,
+    this.bottomWidget,
+    this.hintMessage,
   });
   final bool isHintVisible;
   final Widget mainChild;
+  final Widget? bottomWidget;
+  final String? hintMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +40,11 @@ class BuddyScreenTemplate extends StatelessWidget {
           bottom: 30.h,
           left: 50.w,
           right: 50.w,
-          child: BuddyHintContainer(
-            isHintVisible: isHintVisible,
-          ),
+          child: bottomWidget ??
+              BuddyHintContainer(
+                message: hintMessage ?? '',
+                isHintVisible: isHintVisible,
+              ),
         )
       ],
     );

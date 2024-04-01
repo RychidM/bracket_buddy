@@ -7,10 +7,9 @@ part 'generated/tournament_db_model.g.dart';
 
 @collection
 class Tournament {
-
   Id tournamentId = Isar.autoIncrement;
 
-  String? tournamentName;
+  late String tournamentName;
 
   @Enumerated(EnumType.name)
   TournamentType? tournamentType;
@@ -18,6 +17,21 @@ class Tournament {
   LeagueTournament? leagueTournament;
 
   KnockoutTournament? knockoutTournament;
+
+  Tournament copyWith({
+    Id? tournamentId,
+    String? tournamentName,
+    TournamentType? tournamentType,
+    LeagueTournament? leagueTournament,
+    KnockoutTournament? knockoutTournament,
+  }) {
+    return Tournament()
+      ..tournamentId = tournamentId ?? this.tournamentId
+      ..tournamentType = tournamentType ?? this.tournamentType
+      ..leagueTournament = leagueTournament ?? this.leagueTournament
+      ..knockoutTournament = knockoutTournament ?? this.knockoutTournament
+      ..tournamentName = tournamentName ?? this.tournamentName;
+  }
 }
 
 enum TournamentType {
