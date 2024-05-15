@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
-
 import 'package:get/get.dart';
 
 import '../../../db_services/collections/player_db_model.dart';
@@ -119,15 +118,15 @@ class FixturesView extends GetView<FixturesController> {
           winner = controller.fixtureState.fixtures.first.fixtureWinner.value!;
           controller.fixtureState.fixtures.length > 1
               ? controller.generateNextFixtures()
-              : null;
+              : Get.offNamed(Routes.WINNER, arguments: winner);
           break;
         case TournamentType.league:
           winner = await controller.getHighestPointPlayer();
+          Get.offNamed(Routes.WINNER, arguments: winner);
           break;
         default:
           break;
       }
-      Get.offNamed(Routes.WINNER, arguments: winner);
     } else {
       Get.snackbar(
           AppStrings.bSelectWinnerErrTitle, AppStrings.bSelectWinnerErrMsg,
