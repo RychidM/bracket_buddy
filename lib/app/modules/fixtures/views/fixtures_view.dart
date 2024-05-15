@@ -202,7 +202,7 @@ class PlayerAvatarWidget extends StatelessWidget {
   const PlayerAvatarWidget({
     super.key,
     required this.avatarBgColor,
-    this.imgString = Assets.avatarsAang,
+    this.imgString = Assets.avatarsAangMin,
     this.gamerTag = "Player 1",
     this.reverseOder = false,
     this.isWinner = false,
