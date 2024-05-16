@@ -1,4 +1,4 @@
-package com.example.bracket_buddy
+package dev.richardoppong.bracketBuddy
 
 import io.flutter.embedding.android.FlutterActivity
 

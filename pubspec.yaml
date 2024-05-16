@@ -1,5 +1,5 @@
 name: bracket_buddy
-version: 1.0.0+1
+version: 1.0.0+3
 publish_to: none
 description: Bracket Buddy is a versatile application designed to facilitate bracket pairing and round-robin 'all play all' competitions.
 environment: 
