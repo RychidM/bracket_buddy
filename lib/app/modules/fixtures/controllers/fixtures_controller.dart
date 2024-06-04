@@ -86,7 +86,6 @@ class FixturesController extends GetxController {
   }
 
   static String getCurrentRoundName(int playersLength) {
-
     switch (playersLength) {
       case 16:
         return "Round of 16";
@@ -192,11 +191,11 @@ class FixturesController extends GetxController {
     fixture.fixtureWinner.value = winner;
     await _fixturesRepo.updateRecord(fixture);
     await _playerRepo.updateMultiRecords(
-        [fixture.playerOne.value!, fixture.playerTwo.value!]);
+      [fixture.playerOne.value!, fixture.playerTwo.value!],
+    );
 
     return fixture;
   }
-
 
   void updateCurrentStage(currentStage) {
     fixtureState.currentStage = currentStage;

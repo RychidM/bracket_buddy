@@ -17,6 +17,7 @@ import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,17 +38,17 @@ class HomeView extends GetView<HomeController> {
                     ),
                   ),
                   Positioned(
-                      left: 80.w,
-                      right: 80.w,
-                      bottom: 100.h,
-                      child: BuddyButton(
-                        btnColor: AppColors.whiteColor,
-                        labelColor: AppColors.primaryTextColor,
-                        label: 'START PLAYING',
-                        onTap: () => Get.toNamed(Routes.TOURNAMENT)?.then(
-                            (value) async =>
-                                await controller.fetchTournaments()),
-                      )),
+                    left: 80.w,
+                    right: 80.w,
+                    bottom: 100.h,
+                    child: BuddyButton(
+                      btnColor: AppColors.whiteColor,
+                      labelColor: AppColors.primaryTextColor,
+                      label: 'START PLAYING',
+                      onTap: () => Get.toNamed(Routes.TOURNAMENT)?.then(
+                          (value) async => await controller.fetchTournaments()),
+                    ),
+                  ),
                 ],
               )
             : BuddyScreenTemplate(
@@ -65,11 +66,12 @@ class HomeView extends GetView<HomeController> {
                           children: [
                             const BuddyBodyText(text: "Tournaments"),
                             GestureDetector(
-                                onTap: () {
-                                  HapticFeedback.heavyImpact();
-                                  controller.clearDb();
-                                },
-                                child: SvgPicture.asset(Assets.iconsClose)),
+                              onTap: () {
+                                HapticFeedback.heavyImpact();
+                                controller.clearDb();
+                              },
+                              child: SvgPicture.asset(Assets.iconsClose),
+                            ),
                           ],
                         ),
                         Gap(15.h),
@@ -139,7 +141,8 @@ class HomeView extends GetView<HomeController> {
                   labelColor: AppColors.primaryTextColor,
                   label: 'New Game',
                   onTap: () => Get.toNamed(Routes.TOURNAMENT)?.then(
-                      (value) async => await controller.fetchTournaments()),
+                    (value) async => await controller.fetchTournaments(),
+                  ),
                 ),
               ),
       ),

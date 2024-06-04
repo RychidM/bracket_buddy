@@ -129,8 +129,10 @@ class FixturesView extends GetView<FixturesController> {
       }
     } else {
       Get.snackbar(
-          AppStrings.bSelectWinnerErrTitle, AppStrings.bSelectWinnerErrMsg,
-          backgroundColor: AppColors.primaryGreenLight.withOpacity(.25));
+        AppStrings.bSelectWinnerErrTitle,
+        AppStrings.bSelectWinnerErrMsg,
+        backgroundColor: AppColors.primaryGreenLight.withOpacity(.25),
+      );
     }
   }
 }
