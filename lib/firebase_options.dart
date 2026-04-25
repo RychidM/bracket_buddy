@@ -3,7 +3,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
@@ -19,15 +18,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.windows:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -40,20 +33,21 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static FirebaseOptions android = FirebaseOptions(
-    apiKey: dotenv.get("FIREBASE_ANDROID_APP_API_KEY"),
-    appId: dotenv.get("FIREBASE_ANDROID_APP_ID"),
-    messagingSenderId: dotenv.get("FIREBASE_ANDROID_MESSAGE_SENDING_ID"),
-    projectId: dotenv.get("FIREBASE_PROJECT_ID"),
-    storageBucket: dotenv.get("FIREBASE_STORAGE_BUCKET"),
-  );
-
-  static FirebaseOptions ios = FirebaseOptions(
-    apiKey: dotenv.get("FIREBASE_IOS_APP_API_KEY"),
-    appId: dotenv.get("FIREBASE_IOS_APP_ID"),
-    messagingSenderId: dotenv.get("FIREBASE_IOS_MESSAGE_SENDING_ID"),
-    projectId: dotenv.get("FIREBASE_PROJECT_ID"),
-    storageBucket: dotenv.get("FIREBASE_STORAGE_BUCKET"),
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyB-HUwafwLHea4GlRRv0TeNC9nUFGxVpm4',
+    appId: '1:598237160277:ios:2d02f360fd2340607f05dc',
+    messagingSenderId: '598237160277',
+    projectId: 'bracket-buddy-7a8c4',
+    storageBucket: 'bracket-buddy-7a8c4.firebasestorage.app',
     iosBundleId: 'dev.richardoppong.bracketBuddy',
   );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyBtVkpwBbgMMIa46uotN_JixLwK1MuQyH8',
+    appId: '1:598237160277:android:ddf078e435950d6c7f05dc',
+    messagingSenderId: '598237160277',
+    projectId: 'bracket-buddy-7a8c4',
+    storageBucket: 'bracket-buddy-7a8c4.firebasestorage.app',
+  );
+
 }

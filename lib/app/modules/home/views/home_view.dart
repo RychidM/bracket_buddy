@@ -26,13 +26,13 @@ class HomeView extends GetView<HomeController> {
             ? Stack(
                 children: [
                   Image.asset(
-                    Assets.imagesBgImg,
+                    Assets.images.bgImg.path,
                     width: double.infinity,
                     height: double.infinity,
                   ),
                   Align(
                     child: Image.asset(
-                      Assets.imagesBracketBuddyLogo,
+                      Assets.images.bracketBuddyLogo.path,
                       height: 120.h,
                     ),
                   ),
@@ -69,7 +69,7 @@ class HomeView extends GetView<HomeController> {
                                   HapticFeedback.heavyImpact();
                                   controller.clearDb();
                                 },
-                                child: SvgPicture.asset(Assets.iconsClose)),
+                                child: SvgPicture.asset(Assets.icons.close.path)),
                           ],
                         ),
                         Gap(15.h),

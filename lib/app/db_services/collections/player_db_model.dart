@@ -1,8 +1,8 @@
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import 'tournament_db_model.dart';
 
-part 'generated/player_db_model.g.dart';
+part 'player_db_model.g.dart';
 
 @collection
 class Player {

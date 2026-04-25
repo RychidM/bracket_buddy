@@ -1,4 +1,4 @@
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import '../collections/fixtures_db_model.dart';
 import '../collections/player_db_model.dart';

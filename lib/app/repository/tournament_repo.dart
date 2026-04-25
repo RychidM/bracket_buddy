@@ -1,7 +1,7 @@
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
 import 'package:bracket_buddy/app/db_services/isar_db_service.dart';
 import 'package:bracket_buddy/app/repository/db_service_Adaptor.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 class TournamentRepository extends DbServiceAdaptor<Tournament> {
   late Isar isar;

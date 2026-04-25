@@ -1,8 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
 import 'package:bracket_buddy/app/db_services/isar_db_service.dart';
 import 'package:bracket_buddy/app/db_services/models/knockout_tournament.dart';
 import 'package:bracket_buddy/app/repository/db_service_Adaptor.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import '../db_services/collections/player_db_model.dart';
 
@@ -26,7 +27,7 @@ class PlayerRepository extends DbServiceAdaptor<Player> {
       List<Player?> returnedPlayers = await isar.players.getAll(ids);
       return returnedPlayers.whereType<Player>().toList();
     } on Exception catch (e) {
-      print(e);
+      debugPrint(e.toString());
       rethrow;
     }
   }

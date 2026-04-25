@@ -55,10 +55,10 @@ class WinnerView extends GetView<WinnerController> {
                                 left: 0,
                                 right: 0,
                                 child: Lottie.asset(
-                                    Assets.animationFireworksAnimation)),
+                                    Assets.animation.fireworksAnimation.path)),
                             Positioned(
                                 child: Lottie.asset(
-                                    Assets.animationWinnerAnimation)),
+                                    Assets.animation.winnerAnimation.path)),
                           ],
                         ),
                       ],

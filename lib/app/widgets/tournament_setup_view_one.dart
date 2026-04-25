@@ -44,14 +44,14 @@ class TournamentSetupViewOne extends StatelessWidget {
                   Column(
                     children: [
                       const BuddyHeadingText(text: "KNOCK OUT"),
-                      Image.asset(Assets.imagesKnockoutLogo, height: 230.h),
+                      Image.asset(Assets.images.knockoutLogo.path, height: 230.h),
                     ],
                   ),
                   Column(
                     children: [
                       const BuddyHeadingText(text: "LEAGUE"),
                       Image.asset(
-                        Assets.imagesLeagueLogo,
+                        Assets.images.leagueLogo.path,
                         height: 230.h,
                       ),
                     ],

@@ -23,7 +23,7 @@ class BuddyScreenTemplate extends StatelessWidget {
     return Stack(
       children: [
         Image.asset(
-          Assets.imagesBgSt,
+          Assets.images.bgSt.path,
           height: double.infinity,
           width: double.infinity,
           fit: BoxFit.fill,

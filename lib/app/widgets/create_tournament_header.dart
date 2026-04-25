@@ -14,7 +14,7 @@ class BuddyHeadyWidget extends StatelessWidget {
     return Column(
       children: [
         Image.asset(
-          Assets.imagesBracketBuddyLogo,
+          Assets.images.bracketBuddyLogo.path,
           height: 50.h,
         ),
         Gap(15.h),

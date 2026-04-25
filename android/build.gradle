@@ -1,15 +1,3 @@
-buildscript {
-    ext.kotlin_version = '1.7.10'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
-
 allprojects {
     repositories {
         google()
@@ -17,14 +5,21 @@ allprojects {
     }
 }
 
-rootProject.buildDir = '../build'
+def buildRoot = new File(rootProject.projectDir.parentFile, 'build')
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    layout.buildDirectory.set(file("${buildRoot}/${project.name}"))
 }
 subprojects {
     project.evaluationDependsOn(':app')
 }
 
+subprojects {
+    tasks.withType(JavaCompile).configureEach {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+}
+
 tasks.register("clean", Delete) {
-    delete rootProject.buildDir
+    delete buildRoot
 }

@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'firebase_options.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 import 'package:get/get.dart';
@@ -17,8 +16,6 @@ import 'app/routes/app_pages.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load();
-  
   await Firebase.initializeApp(
        options: DefaultFirebaseOptions.currentPlatform,
      ).then((value) {

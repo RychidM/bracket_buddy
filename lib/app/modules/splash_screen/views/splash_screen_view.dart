@@ -16,7 +16,7 @@ class SplashScreenView extends GetView<SplashScreenController> {
         screenRouteFunction: () async => Routes.HOME,
         animationDuration: const Duration(milliseconds: 1000),
         backgroundColor: const Color(0xFF35B32A),
-        splash: Image.asset(Assets.imagesBracketBuddyLogo),
+        splash: Image.asset(Assets.images.bracketBuddyLogo.path),
       ),
     );
   }

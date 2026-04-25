@@ -1,5 +1,5 @@
 import 'package:bracket_buddy/app/modules/fixtures/controllers/fixtures_controller.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import '../collections/fixtures_db_model.dart';
 import '../collections/player_db_model.dart';

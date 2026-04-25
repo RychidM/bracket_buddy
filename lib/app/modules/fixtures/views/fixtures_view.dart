@@ -201,7 +201,7 @@ class PlayerAvatarWidget extends StatelessWidget {
   const PlayerAvatarWidget({
     super.key,
     required this.avatarBgColor,
-    this.imgString = Assets.avatarsAangMin,
+    this.imgString = 'assets/avatars/aang-min.webp',
     this.gamerTag = "Player 1",
     this.reverseOder = false,
     this.isWinner = false,
@@ -303,7 +303,7 @@ class PlayerAvatarContainer extends StatelessWidget {
             top: -10.h,
             right: -15.w,
             child: Image.asset(
-              Assets.iconsCrown,
+              Assets.icons.crown.path,
               height: 30.h,
             ),
           ),

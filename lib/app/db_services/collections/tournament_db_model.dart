@@ -1,9 +1,9 @@
 import 'package:bracket_buddy/app/db_services/models/league_tournament.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
 import '../models/knockout_tournament.dart';
 
-part 'generated/tournament_db_model.g.dart';
+part 'tournament_db_model.g.dart';
 
 @collection
 class Tournament {

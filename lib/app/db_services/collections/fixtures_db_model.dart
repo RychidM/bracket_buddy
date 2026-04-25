@@ -1,8 +1,8 @@
 import 'package:bracket_buddy/app/db_services/collections/player_db_model.dart';
 import 'package:bracket_buddy/app/db_services/collections/tournament_db_model.dart';
-import 'package:isar/isar.dart';
+import 'package:isar_community/isar.dart';
 
-part 'generated/fixtures_db_model.g.dart';
+part 'fixtures_db_model.g.dart';
 
 @collection
 class Fixture {
